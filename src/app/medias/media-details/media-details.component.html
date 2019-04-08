@@ -1,0 +1,30 @@
+<div *ngIf="media" class="row">
+  <div class="col-md-12">
+    <h2 *ngIf="media._id">Contact Details</h2>
+    <h2 *ngIf="!media._id">New Contact</h2>
+  </div>
+</div>
+<div *ngIf="media" class="row">
+  <form class="col-md-12">
+    <div>Empty Form</div>
+    <!-- <div class="form-group">
+      <label for="contact-name">Name</label>
+      <input class="form-control" name="contact-name" [(ngModel)]="media.source" placeholder="Name"/>
+    </div> -->
+    <!-- <div class="form-group">
+      <label for="contact-email">Email</label>
+      <input class="form-control" name="contact-email" [(ngModel)]="media.email" placeholder="support@mlab.com"/>
+    </div>
+    <div class="form-group">
+      <label for="contact-phone-mobile">Mobile</label>
+      <input class="form-control" name="contact-phone-mobile" [(ngModel)]="media.phone.mobile" placeholder="1234567890"/>
+    </div>
+    <div class="form-group">
+      <label for="contact-phone-work">Work</label>
+      <input class="form-control" name="contact-phone-work" [(ngModel)]="media.phone.work" placeholder="0123456789"/>
+    </div> -->
+    <!-- <button class="btn btn-primary" *ngIf="!media._id" (click)="createContact(contact)">Create</button>
+    <button class="btn btn-info" *ngIf="media._id" (click)="updateContact(contact)">Update</button>
+    <button class="btn btn-danger" *ngIf="media._id" (click)="deleteContact(contact._id)">Delete</button> -->
+  </form>
+</div>
