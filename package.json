@@ -1,6 +1,6 @@
 {
   "name": "mediacatalogadmin",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "start": "npm start && npm serve",
   "scripts": {
     "ng": "ng",

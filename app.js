@@ -9,14 +9,14 @@ var app = express();
 app.use(bodyParser.json());
 
 // Create link to Angular build directory
-var distDir = __dirname + "/dist/mediacatalogadmin";
+var distDir = __dirname + "/dist";
 app.use(express.static(distDir));
 
 // Create a database variable outside of the database connection callback to reuse the connection pool in your app.
 var db;
 
 // Connect to the database before starting the application server.
-mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, client) {
+mongodb.MongoClient.connect(process.env.MONGODB_URI || "mongodb://media_catalog_user:test_123@ds145245.mlab.com:45245/appharbor_thwfllgj", function (err, client) {
   if (err) {
     console.log(err);
     process.exit(1);
@@ -57,17 +57,18 @@ app.get("/api/medias", async function (req, res) {
   var next = req.query.next;
   var q = req.query.q;
   var dbFilter = {};
+  
+  if (q) {
+    dbFilter["$text"] = { $search: q };
+  }
+
+  var countQuery = await db.collection(CONTACTS_COLLECTION).find(dbFilter).count();
+
   if (next) {
     dbFilter = {
       _id: { $lt: ObjectID(next) }
     }
   }
-
-  if (q) {
-    dbFilter["$text"] = { $search: q };
-  }
-
-  var countQuery = await db.collection(CONTACTS_COLLECTION).find({$text: { $search: q }}).count();
 
   db.collection(CONTACTS_COLLECTION).find(dbFilter).sort({
     _id: -1
