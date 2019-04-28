@@ -9,21 +9,24 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MediaDetailsComponent } from './medias/media-details/media-details.component';
 import { MediaListComponent } from './medias/media-list/media-list.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SearchBoxComponent } from './search-box.component'
+import { ImdbInfoComponent } from './imdb-info/imdb-info.component'
 @NgModule({
   declarations: [
     AppComponent,
     MediaDetailsComponent,
     MediaListComponent,
-    SearchBoxComponent
+    SearchBoxComponent,
+    ImdbInfoComponent
   ],
   imports: [
     BrowserModule, BrowserAnimationsModule,
     AppRoutingModule,
     DemoMaterialModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

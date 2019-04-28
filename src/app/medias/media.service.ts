@@ -10,12 +10,12 @@ export class MediaService {
   constructor(private http: HttpClient) { }
 
   // get("/api/contacts")
-  getMedias(next: string, limit: number, query: string): Promise<void | PagedList<Media>> {
+  getMedias(next: number, limit: number, query: string): Promise<void | PagedList<Media>> {
 
     return this.http.get(this.mediasUrl, {
       params: {
         limit: limit.toString(),
-        next:next,
+        next: next.toString(),
         q: query
       }})
       .toPromise()

@@ -17,6 +17,13 @@
       <td mat-cell *matCellDef="let element"> {{element.media_document.name}} </td>
     </ng-container>
 
+    <ng-container matColumnDef="imdb">
+      <th mat-header-cell *matHeaderCellDef> Imdb </th>
+      <td mat-cell *matCellDef="let element">
+        <app-imdb-info></app-imdb-info>  
+      </td>
+    </ng-container>
+
     <!-- Weight Column -->
     <!-- <ng-container matColumnDef="weight">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Weight </th>

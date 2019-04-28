@@ -1,5 +1,5 @@
 export class PagedList<T>{
     items: T[];
-    next: string;
+    pageNo: number;
     totalCount: number;
 }

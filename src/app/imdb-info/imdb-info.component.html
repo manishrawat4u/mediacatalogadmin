@@ -1,0 +1,31 @@
+<form class="example-form" [formGroup]="exampleForm" novalidate
+  (ngSubmit)="save(exampleForm.value, exampleForm.valid,$event)">
+  <mat-form-field class="example-full-width">
+    <input matInput placeholder="Search..." formControlName="q" [matAutocomplete]="auto">
+
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let option of options" [value]="option.title">
+        <!-- <mat-card>
+          <mat-card-title-group>
+            <mat-card-title>{{ option.title }}</mat-card-title>
+            <mat-card-subtitle>{{ option.plot }}</mat-card-subtitle>
+            <img mat-card-sm-image [src]="option.poster">
+          </mat-card-title-group>
+        </mat-card> -->
+        <mat-card>
+          <mat-card-header>
+            <img mat-card-avatar [src]="option.poster">
+            <mat-card-title>{{ option.title }}</mat-card-title>
+            <mat-card-subtitle>{{ option.plot }}</mat-card-subtitle>
+          </mat-card-header>
+        </mat-card>
+        <!-- <mat-card>{{ option.title }}</mat-card> -->
+        <!-- <img class="example-option-img" aria-hidden [src]="option.poster" height="25">
+        <span>{{ option.title }}</span>
+        <small>{{ option.plot }}</small> -->
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+</form>
+
+<!-- <search-box [inputModel]="searchQuery" [matAutocomplete]="auto"></search-box> -->

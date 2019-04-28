@@ -1,13 +1,14 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { Media} from '../media';
+import { Media } from '../media';
 import { MediaService } from '../media.service';
-import {MatSort, MatTableDataSource, MatPaginator, MatSpinner, MatInput} from '@angular/material';
+import { MatSort, MatTableDataSource, MatPaginator, MatSpinner, MatInput } from '@angular/material';
 import { DataSource } from '@angular/cdk/table';
 import { PagedList } from 'src/app/paged.list';
-import {merge, Observable, of as observableOf} from 'rxjs';
-import {catchError, map, startWith, switchMap} from 'rxjs/operators';
+import { merge, Observable, of as observableOf } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { observe } from "rxjs-observe";
-import {SearchBoxComponent} from "src/app/search-box.component"
+import { SearchBoxComponent } from "src/app/search-box.component"
+import { ImdbInfoComponent } from 'src/app/imdb-info/imdb-info.component'
 // import { MediaDetailsComponent } from '../media-details/media-details.component';
 
 @Component({
@@ -22,38 +23,39 @@ export class MediaListComponent implements AfterViewInit {
   medias: Media[]
   selectedMedia: Media
   dataSource;
-searchQuery:string = "";
-totalCount:number =0;
-isLoadingResults = true;
-next = "";
+  searchQuery: string = "";
+  totalCount: number = 0;
+  isLoadingResults: boolean = true;
+  pageNo: number = 1;
 
 
-  displayedColumns: string[] = ['source', 'name'];
-  
+  displayedColumns: string[] = ['source', 'name', 'imdb'];
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-@ViewChild(SearchBoxComponent) search:SearchBoxComponent;
+  @ViewChild(SearchBoxComponent) search: SearchBoxComponent;
 
   constructor(private mediaService: MediaService) { }
 
-  ngAfterViewInit(){
-        // If the user changes the sort order, reset back to the first page.
-        this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
-this.search.search.subscribe(()=>{
-  this.next = "";this.paginator.pageIndex = 0;
-});
+  ngAfterViewInit() {
+    // If the user changes the sort order, reset back to the first page.
+    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+    this.search.search.subscribe(() => {
+      this.pageNo = 1; 
+      this.paginator.pageIndex = 0;
+    });
 
-        merge(this.sort.sortChange, this.paginator.page, this.search.search)
+    merge(this.sort.sortChange, this.paginator.page, this.search.search)
       .pipe(
         startWith({}),
         switchMap(() => {
           this.isLoadingResults = true;
 
           return this.mediaService
-            .getMedias(this.next, this.paginator.pageSize, this.search.inputModel);
-            // .then((medias: PagedList<Media>) => {
-            //   this.dataSource = new MatTableDataSource(medias.items);
-            // });
+            .getMedias(this.paginator.pageIndex + 1, this.paginator.pageSize, this.search.inputModel);
+          // .then((medias: PagedList<Media>) => {
+          //   this.dataSource = new MatTableDataSource(medias.items);
+          // });
 
           // return this.exampleDatabase!.getRepoIssues(
           //   this.sort.active, this.sort.direction, this.paginator.pageIndex);
@@ -61,7 +63,7 @@ this.search.search.subscribe(()=>{
         map(data => {
           // Flip flag to show that loading has finished.
           this.isLoadingResults = false;
-          this.next = (data as PagedList<Media>).next;
+          this.pageNo = (data as PagedList<Media>).pageNo;
           this.paginator.length = (data as PagedList<Media>).totalCount;
           return data;
         }),

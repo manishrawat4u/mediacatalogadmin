@@ -1,0 +1,40 @@
+  .mat-card-avatar {
+    height: 40px;    
+    width: auto;
+    border-radius: 0%;
+    object-fit: cover;
+    margin-right: -8px;
+}
+
+  .example-full-width {
+    width: 100%;
+  }
+
+  .example-form {
+    min-width: 150px;
+    max-width: 500px;
+    width: 100%;
+  }
+  
+  .mat-card{
+      padding: 0px;
+      background: inherit;
+      line-height: normal;
+  }
+
+  .mat-option.mat-active{
+    background: #b6baa52e;
+  }
+
+  .mat-card-title{
+      font-size: 14px;
+  }
+
+  .mat-card-header .mat-card-title{
+      margin-bottom: 12px;
+  }
+
+  .mat-card-subtitle{
+      margin-bottom: 0px;
+      font-size: 12px;
+  }
