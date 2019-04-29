@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { ImdbInfoComponent } from 'src/app/imdb-info/imdb-info.component';
 import { ImdbService } from 'src/app/services/imdb.service';
 import { MediaService } from 'src/app/medias/media.service';
-import { MediaImdbSetRequest } from 'src/app/models/MediaImdbSetRequest';
+import { MediaImdbSetRequest } from 'src/app/models/mediaImdbSetRequest';
 import { ImdbMediaInfo } from 'src/app/models/imdb';
 import { MediaImdbSetResponse } from 'src/app/models/mediaImdbSetResponse';
 

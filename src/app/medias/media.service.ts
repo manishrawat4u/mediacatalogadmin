@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Media } from './media';
 import { HttpClient } from '@angular/common/http';
 import { PagedList } from '../paged.list';
-import { MediaImdbSetRequest } from '../models/MediaImdbSetRequest';
+import { MediaImdbSetRequest } from '../models/mediaImdbSetRequest';
 import { MediaImdbSetResponse } from '../models/mediaImdbSetResponse';
 
 @Injectable()
