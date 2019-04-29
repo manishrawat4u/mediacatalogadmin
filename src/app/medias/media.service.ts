@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { Media } from './media';
 import { HttpClient } from '@angular/common/http';
 import { PagedList } from '../paged.list';
-import { MediaImdbSetRequest, MediaImdbSetResponse } from '../models/MediaImdbSetRequest';
+import { MediaImdbSetRequest } from '../models/MediaImdbSetRequest';
+import { MediaImdbSetResponse } from '../models/mediaImdbSetResponse';
 
 @Injectable()
 export class MediaService {
