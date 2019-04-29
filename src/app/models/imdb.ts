@@ -1,8 +1,8 @@
-export class ImdbMediaInfo {
+export interface ImdbMediaInfo {
     title: string;
     year: string;
     poster : string;
     plot: string;
     imdbRating: string;
-    imdbID: string;
+    imdbId: string;
 }

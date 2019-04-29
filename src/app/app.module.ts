@@ -12,13 +12,15 @@ import { MediaListComponent } from './medias/media-list/media-list.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SearchBoxComponent } from './search-box.component'
 import { ImdbInfoComponent } from './imdb-info/imdb-info.component'
+import { ImdbDocumentComponent } from './components/imdb-document/imdb-document.component';
 @NgModule({
   declarations: [
     AppComponent,
     MediaDetailsComponent,
     MediaListComponent,
     SearchBoxComponent,
-    ImdbInfoComponent
+    ImdbInfoComponent,
+    ImdbDocumentComponent
   ],
   imports: [
     BrowserModule, BrowserAnimationsModule,

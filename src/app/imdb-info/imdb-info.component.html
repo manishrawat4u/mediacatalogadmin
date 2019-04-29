@@ -1,31 +1,25 @@
-<form class="example-form" [formGroup]="exampleForm" novalidate
-  (ngSubmit)="save(exampleForm.value, exampleForm.valid,$event)">
+<form class="example-form" [formGroup]="exampleForm" novalidate>
   <mat-form-field class="example-full-width">
-    <input matInput placeholder="Search..." formControlName="q" [matAutocomplete]="auto">
+    <input matInput formControlName="q" [matAutocomplete]="auto">
+    <!-- <mat-icon matSuffix class="fa-spin" *ngIf="loading">loop</mat-icon> -->
+    <!-- <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar> -->
 
-    <mat-autocomplete #auto="matAutocomplete">
-      <mat-option *ngFor="let option of options" [value]="option.title">
-        <!-- <mat-card>
-          <mat-card-title-group>
-            <mat-card-title>{{ option.title }}</mat-card-title>
-            <mat-card-subtitle>{{ option.plot }}</mat-card-subtitle>
-            <img mat-card-sm-image [src]="option.poster">
-          </mat-card-title-group>
-        </mat-card> -->
-        <mat-card>
-          <mat-card-header>
-            <img mat-card-avatar [src]="option.poster">
-            <mat-card-title>{{ option.title }}</mat-card-title>
-            <mat-card-subtitle>{{ option.plot }}</mat-card-subtitle>
-          </mat-card-header>
-        </mat-card>
-        <!-- <mat-card>{{ option.title }}</mat-card> -->
-        <!-- <img class="example-option-img" aria-hidden [src]="option.poster" height="25">
-        <span>{{ option.title }}</span>
-        <small>{{ option.plot }}</small> -->
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+      <mat-option *ngIf="isLoading">
+        <mat-progress-bar mode="query"></mat-progress-bar>
       </mat-option>
+      <ng-container *ngIf="!isLoading">
+        <mat-option *ngFor="let option of options" [value]="option">
+          <mat-card>
+            <mat-card-header>
+              <img mat-card-avatar [src]="option.poster">
+              <mat-card-title>{{ option.title }} ({{option.year}})</mat-card-title>
+              <mat-card-subtitle>{{ option.plot }}
+              </mat-card-subtitle>
+            </mat-card-header>
+          </mat-card>
+        </mat-option>
+      </ng-container>
     </mat-autocomplete>
   </mat-form-field>
 </form>
-
-<!-- <search-box [inputModel]="searchQuery" [matAutocomplete]="auto"></search-box> -->

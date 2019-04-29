@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Media } from './media';
 import { HttpClient } from '@angular/common/http';
 import { PagedList } from '../paged.list';
+import { MediaImdbSetRequest, MediaImdbSetResponse } from '../models/MediaImdbSetRequest';
 
 @Injectable()
 export class MediaService {
@@ -11,7 +12,6 @@ export class MediaService {
 
   // get("/api/contacts")
   getMedias(next: number, limit: number, query: string): Promise<void | PagedList<Media>> {
-
     return this.http.get(this.mediasUrl, {
       params: {
         limit: limit.toString(),
@@ -23,13 +23,14 @@ export class MediaService {
       .catch(this.handleError);
   }
 
-  // post("/api/contacts")
-  // createContact(newContact: Media): Promise<void | Media> {
-  //   return this.http.post(this.contactsUrl, newContact)
-  //              .toPromise()
-  //              .then(response => response.json() as Media)
-  //              .catch(this.handleError);
-  // }
+  //post("/api/contacts")
+  setImdb(newContact: MediaImdbSetRequest): Promise<void | MediaImdbSetResponse> {
+    var putUrl = this.mediasUrl + '/' + newContact.mediaDocumentId + '/imdb';
+    return this.http.post(putUrl, newContact)
+               .toPromise()               
+               .then(response=> response as MediaImdbSetResponse)
+               .catch(this.handleError);
+  }
 
   // get("/api/contacts/:id") endpoint not used by Angular app
 

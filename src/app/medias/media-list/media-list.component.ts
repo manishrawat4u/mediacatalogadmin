@@ -41,7 +41,7 @@ export class MediaListComponent implements AfterViewInit {
     // If the user changes the sort order, reset back to the first page.
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
     this.search.search.subscribe(() => {
-      this.pageNo = 1; 
+      this.pageNo = 1;
       this.paginator.pageIndex = 0;
     });
 

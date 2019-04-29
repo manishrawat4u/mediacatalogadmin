@@ -31,6 +31,7 @@
     "core-js": "^2.5.4",
     "express": "^4.16.4",
     "imdb-scraper": "^1.0.1",
+    "imdb-scrapper": "^2.2.0",
     "mongodb": "^3.2.3",
     "rxjs": "~6.3.3",
     "rxjs-observe": "^2.0.0",
