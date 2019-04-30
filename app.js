@@ -53,6 +53,8 @@ var medias = require('./routes/medias');
 
 var imdb = require('./routes/imdb');
 
+var playlist = require('./routes/playlist');
 
 app.use('/api/medias', medias);
 app.use('/api/imdb', imdb);
+app.use('/api/playlist', playlist);
