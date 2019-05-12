@@ -1,10 +1,10 @@
 <form class="example-form" [formGroup]="exampleForm" novalidate>
   <mat-form-field class="example-full-width">
     <input matInput formControlName="q" [matAutocomplete]="auto">
-    <!-- <mat-icon matSuffix class="fa-spin" *ngIf="loading">loop</mat-icon> -->
-    <!-- <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar> -->
-
+    <mat-icon matSuffix *ngIf="searchBarIconName=='saved'" color="primary">check_circle</mat-icon>
+    <mat-icon matSuffix svgIcon="loader" *ngIf="searchBarIconName=='saving'"></mat-icon>
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+      
       <mat-option *ngIf="isLoading">
         <mat-progress-bar mode="query"></mat-progress-bar>
       </mat-option>

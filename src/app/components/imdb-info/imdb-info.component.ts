@@ -20,8 +20,10 @@ export class ImdbInfoComponent implements OnInit, AfterViewInit {
   @ViewChild(MatAutocomplete) autoCompleted: MatAutocomplete;
   @Output() selectedItemChanges = new EventEmitter();
   @Input() title: string;
+  @Input() searchBarIconName: string;
   options: ImdbMediaInfo[] = [];
   exampleForm: FormGroup;
+
 
   selectedMediaItem: ImdbMediaInfo;
   selectedTitle: string;
@@ -54,6 +56,7 @@ export class ImdbInfoComponent implements OnInit, AfterViewInit {
         distinctUntilChanged(),
         //startWith(this.title),
         switchMap((v,x) => {
+          this.isLoading = true;
           return this.imdbService.search(v);
           
           //this.isLoadingResults = true;
