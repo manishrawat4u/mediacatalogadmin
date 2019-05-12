@@ -1,11 +1,10 @@
 import { Component, OnInit, AfterViewInit, ViewChild, EventEmitter, Output, Input } from '@angular/core';
-import { ImdbService } from '../services/imdb.service';
+import { ImdbService } from '../../services/imdb.service';
 import { MatAutocomplete, MatInput, MatFormField, MatFormFieldControl } from '@angular/material';
-import { SearchBoxComponent } from '../search-box.component';
 
 import { merge, Observable, of as observableOf } from 'rxjs';
 import { catchError, map, startWith, switchMap, debounceTime, finalize, distinctUntilChanged } from 'rxjs/operators';
-import { ImdbMediaInfo } from '../models/imdb';
+import { ImdbMediaInfo } from '../../models/imdb';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 

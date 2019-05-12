@@ -2,7 +2,7 @@
   <div class="example-loading-shade" *ngIf="isLoadingResults">
     <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
   </div>
-  <search-box [inputModel]="searchQuery" ></search-box>
+  <app-search-box [inputModel]="searchQuery" ></app-search-box>
   <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
 
     <ng-container matColumnDef="source">

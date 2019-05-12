@@ -7,8 +7,9 @@ import { PagedList } from 'src/app/paged.list';
 import { merge, Observable, of as observableOf } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { observe } from "rxjs-observe";
-import { SearchBoxComponent } from "src/app/search-box.component"
-import { ImdbInfoComponent } from 'src/app/imdb-info/imdb-info.component'
+import { SearchBoxComponent } from "src/app/components/search-box/search-box.component"
+
+import { ImdbInfoComponent } from 'src/app/components/imdb-info/imdb-info.component'
 // import { MediaDetailsComponent } from '../media-details/media-details.component';
 
 @Component({
@@ -75,15 +76,15 @@ export class MediaListComponent implements AfterViewInit {
       ).subscribe(data => this.dataSource = new MatTableDataSource((data as PagedList<Media>).items));
   }
 
-  private getIndexOfContact = (contactId: String) => {
-    return this.medias.findIndex((contact) => {
-      return contact._id === contactId;
-    });
-  }
+  // private getIndexOfContact = (contactId: String) => {
+  //   return this.medias.findIndex((contact) => {
+  //     return contact._id === contactId;
+  //   });
+  // }
 
-  selectContact(media: Media) {
-    this.selectedMedia = media
-  }
+  // selectContact(media: Media) {
+  //   this.selectedMedia = media
+  // }
 
   // createNewContact() {
   //   var contact: Contact = {
