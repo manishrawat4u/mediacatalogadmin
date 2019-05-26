@@ -6,6 +6,21 @@ table {
     color: black;
   }
 
+  .mat-column-name,.mat-column-imdb {
+    flex: 0 0 35%;
+    width: 35%;    
+  }
+
+  .mat-column-mimeType,.mat-column-size {
+    flex: 0 0 10%;
+    width: 10%;    
+  }
+
+  .mat-column-quality,.mat-column-source {
+    flex: 0 0 5%;
+    width: 5%;    
+  }
+
 
   // td, th {
   //   width: 25%;

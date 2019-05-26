@@ -1,8 +1,8 @@
 export class Media {
     _id?: string;
   ts: Date;
-  source: string;
-  media_document: {
+  source: string;  
+  mediaDocument: {
     name: string;
     mimeType: string;
     id: string;

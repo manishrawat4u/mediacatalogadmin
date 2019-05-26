@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var CONTACTS_COLLECTION = "media_catalog";
+var MEDIA_COLLECTION = "media_catalog";
 var mongodb = require("mongodb");
 var ObjectID = mongodb.ObjectID;
 
@@ -25,13 +25,33 @@ router.get("/", async function (req, res) {
     dbFilter["$text"] = { $search: q };
   }
 
-  var countQuery = await db.collection(CONTACTS_COLLECTION).find(dbFilter).count();
+  var countQuery = await db.collection(MEDIA_COLLECTION).find(dbFilter).count();
 
-  db.collection(CONTACTS_COLLECTION).find(dbFilter).skip(skip).limit(limit).toArray(function (err, items) {
+  db.collection(MEDIA_COLLECTION).find(dbFilter).skip(skip).limit(limit).toArray(function (err, items) {
     if (err) {
       handleError(res, err.message, "Failed to get media.");
     } else {
       var totalCount = countQuery;
+
+      items = items.map(x => {
+        var ojjjj = {
+          _id : x._id,
+          source : x.source,
+          ts : x.ts,
+          imdbInfo: x.imdbInfo,
+          mediaDocument : {
+            name: x.media_document.name,
+            mimeType: x.media_document.mimeType,
+            id: x.media_document.id,
+            originalFilename: x.media_document.originalFilename,
+            size: x.media_document.size,
+            md5Checksum: x.media_document.md5Checksum,
+            videoMediaMetadata: x.media_document.videoMediaMetadata
+          }
+        };
+        return ojjjj;
+      });
+
       res.status(200).json({ items, pageNo, totalCount });
     }
   });
@@ -51,7 +71,7 @@ router.post('/:mediaId/imdb', async function (req, res) {
     poster: result.poster
   }
 
-  db.collection(CONTACTS_COLLECTION).updateOne({ _id: ObjectID(mediaId) }, { $set: { imdbInfo: imdbObject } }, function (err, doc) {
+  db.collection(MEDIA_COLLECTION).updateOne({ _id: ObjectID(mediaId) }, { $set: { imdbInfo: imdbObject } }, function (err, doc) {
     var response = {};
 
     if (err) {

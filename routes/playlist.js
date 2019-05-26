@@ -9,6 +9,14 @@ router.get("/", async function (req, res) {
         "id": "4k",
         "displayName": "4k Movies",
         "playlistType": "auto"
+    }, {
+        "id": "fhd",
+        "displayName": "Full HD Movies (1080p)",
+        "playlistType": "auto"
+    }, {
+        "id": "hd",
+        "displayName": "HD Movies (720p)",
+        "playlistType": "auto"
     }];
     res.send(dataToReturn || [], null, 4);
 });
@@ -23,6 +31,34 @@ router.get('/:paylistId', async function (req, res) {
             "media_document.videoMediaMetadata.width": { $gt: 3000 }
         }
     }
+
+    switch (playlistId) {
+        case "4k":
+            dbFilter = {
+                "imdbInfo": { $ne: null },
+                "media_document.videoMediaMetadata.width": { $gt: 3000 }
+            }
+            break;
+        case "fhd":
+            dbFilter = {
+                "imdbInfo": { $ne: null },
+                "media_document.videoMediaMetadata.width": { $gt: 1800, $lt: 3000 }
+            }
+            break;
+        case "hd":
+            dbFilter = {
+                "imdbInfo": { $ne: null },
+                "media_document.videoMediaMetadata.width": { $gt: 1200, $lt: 1800 }
+            }
+            break;
+        default:
+            dbFilter = {
+                "imdbInfo": { $ne: null },
+                "playlistId": playlistId
+            }
+            break;
+    }
+
 
     db.collection(MEDIA_COLLECTION).find(dbFilter).toArray(function (err, doc) {
         var g = [];
