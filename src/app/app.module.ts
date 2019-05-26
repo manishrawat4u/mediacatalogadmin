@@ -13,6 +13,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SearchBoxComponent } from './components/search-box/search-box.component'
 import { ImdbInfoComponent } from './components/imdb-info/imdb-info.component'
 import { ImdbDocumentComponent } from './components/imdb-document/imdb-document.component';
+import { MediaQualityComponent } from './components/media-quality/media-quality.component';
+import {FileSizeModule} from 'ngx-filesize';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -20,7 +23,8 @@ import { ImdbDocumentComponent } from './components/imdb-document/imdb-document.
     MediaListComponent,
     SearchBoxComponent,
     ImdbInfoComponent,
-    ImdbDocumentComponent
+    ImdbDocumentComponent,
+    MediaQualityComponent
   ],
   imports: [
     BrowserModule, BrowserAnimationsModule,
@@ -28,7 +32,8 @@ import { ImdbDocumentComponent } from './components/imdb-document/imdb-document.
     DemoMaterialModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FileSizeModule
   ],
   providers: [],
   bootstrap: [AppComponent]

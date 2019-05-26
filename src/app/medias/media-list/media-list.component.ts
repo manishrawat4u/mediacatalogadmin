@@ -9,9 +9,6 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { observe } from "rxjs-observe";
 import { SearchBoxComponent } from "src/app/components/search-box/search-box.component"
 
-import { ImdbInfoComponent } from 'src/app/components/imdb-info/imdb-info.component'
-// import { MediaDetailsComponent } from '../media-details/media-details.component';
-
 @Component({
   selector: 'media-list',
   templateUrl: './media-list.component.html',
@@ -30,7 +27,7 @@ export class MediaListComponent implements AfterViewInit {
   pageNo: number = 1;
 
 
-  displayedColumns: string[] = ['source', 'name', 'imdb'];
+  displayedColumns: string[] = ['name', 'source', 'mimeType', 'size', 'quality', 'imdb'];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;

@@ -11,8 +11,7 @@ export class AppComponent {
   title = 'mediacatalogadmin';
   constructor(private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer) {
-    //matIconRegistry.addSvgIconLiteral('loader', );
     this.matIconRegistry.addSvgIcon('loader', this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/iconLoader.svg"));
-    // mdIconRegistry.addSvgIcon('icon2',sanitizer.bypassSecurityTrustResourceUrl('assets/icon2.svg'));
+    this.matIconRegistry.addSvgIcon('gdrive_logo', this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/googleDriveLogoOnly.svg"));
 }
 }
