@@ -33,7 +33,7 @@ router.get("/", async function (req, res) {
 
 router.get('/livecricket', async function (req, res) {
     var objToReturn = {};
-    var m3u8Only = req.query.m3u8Only;
+    var all = req.query.all;
 
     const otherRequester = new snoowrap({
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36',
@@ -78,7 +78,7 @@ router.get('/livecricket', async function (req, res) {
                     normalizedUrl && allextractedurls.push(normalizedUrl);
                 }
             }
-            var finalList = allextractedurls.filter(x => !m3u8Only || x.endsWith('m3u8'));
+            var finalList = allextractedurls.filter(x => x.endsWith('m3u8') || all);
             var mediaSources = finalList.map(x => {
                 var u = url.parse(x);
                 return {
