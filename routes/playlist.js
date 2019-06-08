@@ -75,7 +75,9 @@ router.get('/livecricket', async function (req, res) {
                     if (normalizedUrl.includes("bit.ly")) {
                         normalizedUrl = await urlunshort.expand(normalizedUrl);
                     } else if(normalizedUrl.includes("cric8")){
-                        normalizedUrl = "http://cdn1.cric8.cc/live/cric1/index.m3u8"
+                        var regex = /game[\d]/g;
+                        var found = normalizedUrl.match(regex);
+                        found && (normalizedUrl = `http://cdn1.cric8.cc/live/${found[0].replace("game","cric")}/index.m3u8`);
                     }
                     normalizedUrl && allextractedurls.push({normalizedUrl, extractedUrl});
                 }
