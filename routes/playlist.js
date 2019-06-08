@@ -77,15 +77,17 @@ router.get('/livecricket', async function (req, res) {
                     } else if(normalizedUrl.includes("cric8")){
                         normalizedUrl = "http://cdn1.cric8.cc/live/cric1/index.m3u8"
                     }
-                    normalizedUrl && allextractedurls.push(normalizedUrl);
+                    normalizedUrl && allextractedurls.push({normalizedUrl, extractedUrl});
                 }
             }
-            var finalList = allextractedurls.filter(x => x.endsWith('m3u8') || all);
+            var finalList = allextractedurls.filter(x => x.normalizedUrl.endsWith('m3u8') || all);
             var mediaSources = finalList.map(x => {
-                var u = url.parse(x);
+                var u = url.parse(x.normalizedUrl);
                 return {
                     id: "",
-                    streamUrl: x,
+                    streamUrl: x.normalizedUrl,
+                    sourceUrl: x.extractedUrl,
+                    headers: x.normalizedUrl.includes("cric8") && ["Referer: http://cric8.cc"],
                     mimeType: "hls",
                     size: "0",
                     source: u.hostname
