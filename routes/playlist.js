@@ -87,7 +87,7 @@ router.get('/livecricket', async function (req, res) {
                     id: "",
                     streamUrl: x.normalizedUrl,
                     sourceUrl: x.extractedUrl,
-                    headers: x.normalizedUrl.includes("cric8") && ["Referer: http://cric8.cc"],
+                    headers: x.normalizedUrl.includes("cric8") ? ["Referer: http://cric8.cc"] : null,
                     mimeType: "hls",
                     size: "0",
                     source: u.hostname
