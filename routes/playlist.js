@@ -77,7 +77,16 @@ router.get('/livecricket', async function (req, res) {
                     } else if(normalizedUrl.includes("cric8")){
                         var regex = /game[\d]/g;
                         var found = normalizedUrl.match(regex);
-                        found && (normalizedUrl = `http://cdn1.cric8.cc/live/${found[0].replace("game","cric")}/index.m3u8`);
+                        
+                        if (found){
+                            normalizedUrl = `http://cdn1.cric8.cc/live/${found[0].replace("game","cric")}/index.m3u8`;
+                            allextractedurls.push({normalizedUrl, extractedUrl});
+
+                            normalizedUrl = `http://cdn2.cric8.cc/live/${found[0].replace("game","cric")}/index.m3u8`;
+                            allextractedurls.push({normalizedUrl, extractedUrl});
+
+                            normalizedUrl = `http://cdn3.cric8.cc/live/${found[0].replace("game","cric")}/index.m3u8`;
+                        }
                     }
                     normalizedUrl && allextractedurls.push({normalizedUrl, extractedUrl});
                 }
