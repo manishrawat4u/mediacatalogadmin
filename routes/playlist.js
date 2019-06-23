@@ -135,49 +135,50 @@ router.get('/hotstarmovies', async function (req, res) {
 });
 
 
-async function getHS(pageId, pageSize, res){
+async function getHS(pageId, pageSize, res) {
     let config = {
         headers: {
             'x-platform-code': 'PCTV',
             'x-country-code': 'IN'
         }
     }
-    var hotstarSportApiUrl = `https://api.hotstar.com/o/v1/page/${pageId}?offset=0&size=${pageSize}&tao=0&tas=20`;
+    var hotstarSportApiUrl = `https://api.hotstar.com/o/v1/page/${pageId}?offset=0&size=${pageSize}&tao=0&tas=${pageSize}`;
     const apiResponse = await axios.get(hotstarSportApiUrl, config);
     var objImdbs = [];
     apiResponse.data.body.results.trays.items.forEach(el => {
         var assetItems = el.assets && el.assets.items;
-        assetItems && assetItems.forEach(as=>{
+        assetItems && assetItems.forEach(as => {
             try {
-                if (as.assetType == 'GAME') return;
+                if (as.assetType == 'GAME' || as.premium) return;
                 var imdbInfo = {};
                 imdbInfo.id = as.contentId;
                 imdbInfo.plot = as.title;
-                imdbInfo.poster = 'https://img1.hotstarext.com/image/upload/f_auto,t_web_hs_3x/' + (as.images && as.images.h);
+                imdbInfo.poster = 'https://img1.hotstarext.com/image/upload/f_auto,t_web_vl_3x/' + (as.images && as.images.h);
                 imdbInfo.title = as.title;
                 imdbInfo.year = "2019";
-    
+
                 var mediaSources = [{
-                        id: "",
-                        streamUrl: `http://mediacatalogadmin.herokuapp.com/api/playlist/hsdirect/${as.contentId}`,
-                        sourceUrl: as.playbackUri,
-                        //headers: x.normalizedUrl.includes("cric8") ? ["Referer: http://cric8.cc"] : null,
-                        mimeType: "hls",
-                        size: "0",
-                        source: 'hotstar',
-                        live: as.live
-                    }];
-    
-    
-                objImdbs.push({
-                    imdbInfo,
-                    mediaSources
-                })    
+                    id: "",
+                    streamUrl: `http://mediacatalogadmin.herokuapp.com/api/playlist/hsdirect/${as.contentId}`,
+                    sourceUrl: as.playbackUri,
+                    //headers: x.normalizedUrl.includes("cric8") ? ["Referer: http://cric8.cc"] : null,
+                    mimeType: "hls",
+                    size: "0",
+                    source: 'hotstar',
+                    live: as.live
+                }];
+
+                if (objImdbs.findIndex(x => x.imdbInfo.id === imdbInfo.id) === -1) {
+                    objImdbs.push({
+                        imdbInfo,
+                        mediaSources
+                    })
+                }
             } catch (error) {
                 console.log('Error while parsing the api response');
                 console.log(error);
             }
-            
+
         });
     })
 
