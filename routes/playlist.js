@@ -31,6 +31,10 @@ router.get("/", async function (req, res) {
         "id": "hotstarsports",
         "displayName": "Hotstar Sports",
         "playlistType": "auto"
+    }, {
+        "id": "hotstarmovies",
+        "displayName": "Hotstar Movies",
+        "playlistType": "auto"
     }];
     res.send(dataToReturn || [], null, 4);
 });
@@ -122,13 +126,23 @@ router.get('/livecricket', async function (req, res) {
 });
 
 router.get('/hotstarsports', async function (req, res) {
+    getHS(1984, 20, res);
+});
+
+
+router.get('/hotstarmovies', async function (req, res) {
+    getHS(1958, 200, res);
+});
+
+
+async function getHS(pageId, pageSize, res){
     let config = {
         headers: {
             'x-platform-code': 'PCTV',
             'x-country-code': 'IN'
         }
     }
-    var hotstarSportApiUrl = `https://api.hotstar.com/o/v1/page/1984?offset=0&size=20&tao=0&tas=20`;
+    var hotstarSportApiUrl = `https://api.hotstar.com/o/v1/page/${pageId}?offset=0&size=${pageSize}&tao=0&tas=20`;
     const apiResponse = await axios.get(hotstarSportApiUrl, config);
     var objImdbs = [];
     apiResponse.data.body.results.trays.items.forEach(el => {
@@ -150,7 +164,8 @@ router.get('/hotstarsports', async function (req, res) {
                         //headers: x.normalizedUrl.includes("cric8") ? ["Referer: http://cric8.cc"] : null,
                         mimeType: "hls",
                         size: "0",
-                        source: 'hotstar'
+                        source: 'hotstar',
+                        live: as.live
                     }];
     
     
@@ -170,7 +185,7 @@ router.get('/hotstarsports', async function (req, res) {
     response.success = true;
     response.items = objImdbs;
     res.send(response, null, 4);
-});
+}
 
 
 router.get('/hsdirect/:contentId', async function (req, res) {
