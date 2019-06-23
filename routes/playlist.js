@@ -27,6 +27,10 @@ router.get("/", async function (req, res) {
         "id": "livecricket",
         "displayName": "Live Cricket (Reddit)",
         "playlistType": "auto"
+    }, {
+        "id": "hotstarsports",
+        "displayName": "Hotstar Sports",
+        "playlistType": "auto"
     }];
     res.send(dataToReturn || [], null, 4);
 });
@@ -74,21 +78,21 @@ router.get('/livecricket', async function (req, res) {
                     var normalizedUrl = voca.trim(extractedUrl, ")")
                     if (normalizedUrl.includes("bit.ly")) {
                         normalizedUrl = await urlunshort.expand(normalizedUrl);
-                    } else if(normalizedUrl.includes("cric8")){
+                    } else if (normalizedUrl.includes("cric8")) {
                         var regex = /game[\d]/g;
                         var found = normalizedUrl.match(regex);
-                        
-                        if (found){
-                            normalizedUrl = `http://cdn1.cric8.cc/live/${found[0].replace("game","cric")}/index.m3u8`;
-                            allextractedurls.push({normalizedUrl, extractedUrl});
 
-                            normalizedUrl = `http://cdn2.cric8.cc/live/${found[0].replace("game","cric")}/index.m3u8`;
-                            allextractedurls.push({normalizedUrl, extractedUrl});
+                        if (found) {
+                            normalizedUrl = `http://cdn1.cric8.cc/live/${found[0].replace("game", "cric")}/index.m3u8`;
+                            allextractedurls.push({ normalizedUrl, extractedUrl });
 
-                            normalizedUrl = `http://cdn3.cric8.cc/live/${found[0].replace("game","cric")}/index.m3u8`;
+                            normalizedUrl = `http://cdn2.cric8.cc/live/${found[0].replace("game", "cric")}/index.m3u8`;
+                            allextractedurls.push({ normalizedUrl, extractedUrl });
+
+                            normalizedUrl = `http://cdn3.cric8.cc/live/${found[0].replace("game", "cric")}/index.m3u8`;
                         }
                     }
-                    normalizedUrl && allextractedurls.push({normalizedUrl, extractedUrl});
+                    normalizedUrl && allextractedurls.push({ normalizedUrl, extractedUrl });
                 }
             }
             var finalList = allextractedurls.filter(x => x.normalizedUrl.endsWith('m3u8') || all);
@@ -116,6 +120,67 @@ router.get('/livecricket', async function (req, res) {
     response.items = objImdbs;
     res.send(response, null, 4);
 });
+
+router.get('/hotstarsports', async function (req, res) {
+    let config = {
+        headers: {
+            'x-platform-code': 'PCTV',
+            'x-country-code': 'IN'
+        }
+    }
+    var hotstarSportApiUrl = `https://api.hotstar.com/o/v1/page/1984?offset=0&size=20&tao=0&tas=20`;
+    const apiResponse = await axios.get(hotstarSportApiUrl, config);
+    var objImdbs = [];
+    apiResponse.data.body.results.trays.items.forEach(el => {
+        var assetItems = el.assets && el.assets.items;
+        assetItems && assetItems.forEach(as=>{
+            try {
+                if (as.assetType == 'GAME') return;
+                var imdbInfo = {};
+                imdbInfo.id = as.contentId;
+                imdbInfo.plot = as.title;
+                imdbInfo.poster = 'https://img1.hotstarext.com/image/upload/f_auto,t_web_hs_3x/' + (as.images && as.images.h);
+                imdbInfo.title = as.title;
+                imdbInfo.year = "2019";
+    
+                var mediaSources = [{
+                        id: "",
+                        streamUrl: `http://mediacatalogadmin.herokuapp.com/api/playlist/hsdirect/${as.contentId}`,
+                        sourceUrl: as.playbackUri,
+                        //headers: x.normalizedUrl.includes("cric8") ? ["Referer: http://cric8.cc"] : null,
+                        mimeType: "hls",
+                        size: "0",
+                        source: 'hotstar'
+                    }];
+    
+    
+                objImdbs.push({
+                    imdbInfo,
+                    mediaSources
+                })    
+            } catch (error) {
+                console.log('Error while parsing the api response');
+                console.log(error);
+            }
+            
+        });
+    })
+
+    var response = {};
+    response.success = true;
+    response.items = objImdbs;
+    res.send(response, null, 4);
+});
+
+
+router.get('/hsdirect/:contentId', async function (req, res) {
+    var contentId = req.params.contentId;
+    var hotstarSportApiUrl = `https://api.hotstar.com/h/v2/play/in/contents/${contentId}?desiredConfig=ads:non_ssai;dvr:short;encryption:plain;ladder:tv;language:hin;package:hls&client=web&clientVersion=6.25.0&deviceId=e8848e56-998b-4ae2-a787-383f8dd00b99&osName=Windows&osVersion=10`
+    const apiResponse = await axios.get(hotstarSportApiUrl);
+    console.log(apiResponse.data);
+    var playbackUrl = apiResponse.data.body.results.playBackSets[0].playbackUrl;
+    res.redirect(playbackUrl);
+})
 
 router.get('/:paylistId', async function (req, res) {
     var db = req.app.locals.db;
