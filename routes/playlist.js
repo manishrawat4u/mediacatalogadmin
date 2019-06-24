@@ -32,8 +32,12 @@ router.get("/", async function (req, res) {
         "displayName": "Hotstar Sports",
         "playlistType": "auto"
     }, {
-        "id": "hotstarmovies",
-        "displayName": "Hotstar Movies",
+        "id": "hotstarhindimovies",
+        "displayName": "Hotstar Hindi Movies",
+        "playlistType": "auto"
+    }, {
+        "id": "hotstarengmovies",
+        "displayName": "Hotstar Egnlish Movies",
         "playlistType": "auto"
     }];
     res.send(dataToReturn || [], null, 4);
@@ -126,34 +130,41 @@ router.get('/livecricket', async function (req, res) {
 });
 
 router.get('/hotstarsports', async function (req, res) {
-    getHS(1984, 20, res);
+    hotstarUrl = `https://api.hotstar.com/o/v1/page/1984?offset=0&size=20&tao=0&tas=20`
+    getHS(hotstarUrl, res);
 });
 
 
-router.get('/hotstarmovies', async function (req, res) {
-    getHS(1958, 200, res);
+router.get('/hotstarhindimovies', async function (req, res) {
+    hotstarUrl = `https://api.hotstar.com/o/v1/language/f_cr/asset?id=9&avsCategoryId=5631&offset=0&size=600&pageNo=1&perPage=600&ct=200`
+    getHS(hotstarUrl, res);
 });
 
+router.get('/hotstarengmovies', async function (req, res) {
+    hotstarUrl = `https://api.hotstar.com/o/v1/language/f_cr/asset?id=3&avsCategoryId=5630&offset=0&size=600&pageNo=1&perPage=600&ct=200`
+    getHS(hotstarUrl, res);
+});
 
-async function getHS(pageId, pageSize, res) {
+async function getHS(hotstarUrl, res) {
     let config = {
         headers: {
             'x-platform-code': 'PCTV',
             'x-country-code': 'IN'
         }
     }
-    var hotstarSportApiUrl = `https://api.hotstar.com/o/v1/page/${pageId}?offset=0&size=${pageSize}&tao=0&tas=${pageSize}`;
+    var hotstarSportApiUrl = hotstarUrl;
     const apiResponse = await axios.get(hotstarSportApiUrl, config);
     var objImdbs = [];
-    apiResponse.data.body.results.trays.items.forEach(el => {
-        var assetItems = el.assets && el.assets.items;
+    var iteratableResult = apiResponse.data.body.results.items || apiResponse.data.body.results.trays.items
+    iteratableResult.forEach(el => {
+        var assetItems = (el.assets && el.assets.items) || [el];
         assetItems && assetItems.forEach(as => {
             try {
-                if (as.assetType == 'GAME' || as.premium) return;
+                if (as.assetType == 'GAME' || as.premium || !as.contentId) return;
                 var imdbInfo = {};
                 imdbInfo.id = as.contentId;
                 imdbInfo.plot = as.title;
-                imdbInfo.poster = 'https://img1.hotstarext.com/image/upload/f_auto,t_web_vl_3x/' + (as.images && as.images.h);
+                imdbInfo.poster = 'https://img1.hotstarext.com/image/upload/f_auto,t_web_vl_3x/' + (as.images && (as.images.v || as.images.h));
                 imdbInfo.title = as.title;
                 imdbInfo.year = "2019";
 
