@@ -1,0 +1,25 @@
+<form class="example-form" [formGroup]="exampleForm" novalidate>
+  <mat-form-field class="example-full-width">
+    <input matInput formControlName="q" [matAutocomplete]="auto">
+    <mat-icon matSuffix *ngIf="searchBarIconName=='saved'" color="primary">check_circle</mat-icon>
+    <mat-icon matSuffix svgIcon="loader" *ngIf="searchBarIconName=='saving'"></mat-icon>
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+      
+      <mat-option *ngIf="isLoading">
+        <mat-progress-bar mode="query"></mat-progress-bar>
+      </mat-option>
+      <ng-container *ngIf="!isLoading">
+        <mat-option *ngFor="let option of options" [value]="option">
+          <mat-card>
+            <mat-card-header>
+              <img mat-card-avatar [src]="option.poster">
+              <mat-card-title>{{ option.title }} ({{option.year}})</mat-card-title>
+              <mat-card-subtitle>{{ option.plot }}
+              </mat-card-subtitle>
+            </mat-card-header>
+          </mat-card>
+        </mat-option>
+      </ng-container>
+    </mat-autocomplete>
+  </mat-form-field>
+</form>

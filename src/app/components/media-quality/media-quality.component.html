@@ -1,0 +1,5 @@
+<mat-icon *ngIf="width>0 else elseBlock" matTooltip="{{width}} x {{height}}" color="primary">{{resolution}}</mat-icon>
+
+<ng-template #elseBlock>
+    <mat-icon matTooltip="Unknown" color="primary">warning</mat-icon>
+</ng-template>
