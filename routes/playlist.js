@@ -9,6 +9,7 @@ const getUrls = require('get-urls');
 const voca = require('voca');
 const urlunshort = require('url-unshort')();
 const url = require('url');
+var nurlresolver = require('nurlresolver');
 
 router.get("/", async function (req, res) {
     var dataToReturn = [{
@@ -24,23 +25,78 @@ router.get("/", async function (req, res) {
         "displayName": "HD Movies (720p)",
         "playlistType": "auto"
     }, {
-        "id": "livecricket",
-        "displayName": "Live Cricket (Reddit)",
+        "id": "hdhub4u",
+        "displayName": "HDHub4u",
         "playlistType": "auto"
-    }, {
-        "id": "hotstarsports",
-        "displayName": "Hotstar Sports",
-        "playlistType": "auto"
-    }, {
-        "id": "hotstarhindimovies",
-        "displayName": "Hotstar Hindi Movies",
-        "playlistType": "auto"
-    }, {
-        "id": "hotstarengmovies",
-        "displayName": "Hotstar Egnlish Movies",
-        "playlistType": "auto"
-    }];
+    }
+    // , {
+    //     "id": "livecricket",
+    //     "displayName": "Live Cricket (Reddit)",
+    //     "playlistType": "auto"
+    // }, {
+    //     "id": "hotstarsports",
+    //     "displayName": "Hotstar Sports",
+    //     "playlistType": "auto"
+    // }, {
+    //     "id": "hotstarhindimovies",
+    //     "displayName": "Hotstar Hindi Movies",
+    //     "playlistType": "auto"
+    // }, {
+    //     "id": "hotstarengmovies",
+    //     "displayName": "Hotstar Egnlish Movies",
+    //     "playlistType": "auto"
+    // }
+];
     res.send(dataToReturn || [], null, 4);
+});
+
+router.get('/hdhub4u', async function (req, res) {
+    const hdhub4u = 'https://hdhub4u.live';
+    var results = await nurlresolver.resolve(hdhub4u);
+    var objImdbs = [];
+    results.forEach(x => {
+        {
+            var imdbInfo = {};
+            imdbInfo.id = x.link;
+            imdbInfo.plot = x.title;
+            imdbInfo.poster = x.poster;
+            imdbInfo.title = x.title;
+            imdbInfo.year = "2019";
+            var mediaSourceUrl = `/api/mediasource?u=${encodeURIComponent(x.link)}`
+            objImdbs.push({
+                imdbInfo,
+                mediaSourceUrl 
+            })
+        }
+    });
+    var response = {};
+    response.success = true;
+    response.items = objImdbs;
+    res.send(response, null, 4);
+});
+
+router.get('/mediasource', async function (req, res) {
+    var u = req.query.u;
+    var results = await nurlresolver.resolveRecursive(u);
+    var mediaSources = [];
+    results.forEach(x => {
+        {
+            var mediaSource = {
+                id: "",
+                streamUrl: x.link,
+                title: x.title || x.link,
+                mimeType: "mkv",
+                size: "0",
+                source: 'api',
+                live: 0 //can be determined by hls source
+            };
+            mediaSources.push(mediaSource)
+        }
+    });
+    var response = {};
+    response.success = true;
+    response.items = mediaSources;
+    res.send(response, null, 4);
 });
 
 router.get('/livecricket', async function (req, res) {
