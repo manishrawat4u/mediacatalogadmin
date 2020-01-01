@@ -2,6 +2,9 @@
   "name": "mediacatalogadmin",
   "version": "0.0.1",
   "start": "npm start && npm serve",
+  "engines": {
+    "node": "10.x"
+  },
   "scripts": {
     "ng": "ng",
     "debug": "node --nolazy --inspect-brk=9229 app.js",
@@ -36,7 +39,7 @@
     "imdb-scrapper": "^2.2.0",
     "mongodb": "^3.2.3",
     "ngx-filesize": "^1.1.3",
-    "nurlresolver": "0.0.1-patch02",
+    "nurlresolver": "0.0.2",
     "rxjs": "~6.3.3",
     "rxjs-observe": "^2.0.0",
     "snoowrap": "^1.15.2",
