@@ -62,7 +62,7 @@ router.get('/hdhub4u', async function (req, res) {
             imdbInfo.poster = x.poster;
             imdbInfo.title = x.title;
             imdbInfo.year = "2019";
-            var mediaSourceUrl = `/api/mediasource?u=${encodeURIComponent(x.link)}`
+            var mediaSourceUrl = `/api/playlist/mediasource?u=${encodeURIComponent(x.link)}`
             objImdbs.push({
                 imdbInfo,
                 mediaSourceUrl 
