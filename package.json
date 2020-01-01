@@ -39,7 +39,7 @@
     "imdb-scrapper": "^2.2.0",
     "mongodb": "^3.2.3",
     "ngx-filesize": "^1.1.3",
-    "nurlresolver": "0.0.1-patch02",
+    "nurlresolver": "0.0.1-patch03",
     "rxjs": "~6.3.3",
     "rxjs-observe": "^2.0.0",
     "snoowrap": "^1.15.2",
