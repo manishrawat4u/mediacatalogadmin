@@ -2,6 +2,9 @@
   "name": "mediacatalogadmin",
   "version": "0.0.1",
   "start": "npm start && npm serve",
+  "engines": {
+    "node": "10.x"
+  },
   "scripts": {
     "ng": "ng",
     "debug": "node --nolazy --inspect-brk=9229 app.js",
