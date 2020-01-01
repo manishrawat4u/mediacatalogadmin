@@ -5,13 +5,14 @@ const got = require('got');
 
 router.get("/roku", async function (req, res) {
     try {
-        var h = parseInt(req.query.h);
-        var u = req.query.u;
+        const h = parseInt(req.query.h);
+        const u = req.query.u;
         const rawBuffer = await got(u, {
             responseType: 'buffer'
         });
-        const bfff = await sharp(rawBuffer.body).resize(h).png().toBuffer();
-        res.sendRaw(bfff);
+        const pngBuffer = await sharp(rawBuffer.body).resize(h).png().toBuffer();
+        res.type('png');
+        res.end(pngBuffer);
     } catch (error) {
         console.log(error);
         console.log('Unable to resolve given image');

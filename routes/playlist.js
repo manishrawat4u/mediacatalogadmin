@@ -60,7 +60,7 @@ router.get('/hdhub4u', async function (req, res) {
             imdbInfo.id = x.link;
             imdbInfo.plot = x.title;
             imdbInfo.poster = x.poster;
-            imdbInfo.posterThumb = `/api/images/roku?u=${encodeURIComponent(x.poster)}&h=300`;
+            imdbInfo.posterThumb = `/api/images/roku?u=${encodeURIComponent(x.poster)}&h=268`;
             imdbInfo.title = x.title;
             imdbInfo.year = "2019";
             var mediaSourceUrl = `/api/playlist/mediasource?u=${encodeURIComponent(x.link)}`
