@@ -28,6 +28,10 @@ router.get("/", async function (req, res) {
         "id": "hdhub4u",
         "displayName": "HDHub4u",
         "playlistType": "auto"
+    }, {
+        "id": "extramovies",
+        "displayName": "ExtraMovies",
+        "playlistType": "auto"
     }
         // , {
         //     "id": "livecricket",
@@ -51,8 +55,17 @@ router.get("/", async function (req, res) {
 });
 
 router.get('/hdhub4u', async function (req, res) {
-    const hdhub4u = 'https://hdhub4u.live';
-    var results = await nurlresolver.resolve(hdhub4u);
+    const sourceUrl = 'https://hdhub4u.live';
+    getUrlResolverPlaylistItem(sourceUrl, res);
+});
+
+router.get('/extramovies', async function (req, res) {
+    const sourceUrl = 'https://extramovies.pink/';
+    getUrlResolverPlaylistItem(sourceUrl, res);
+});
+
+async function getUrlResolverPlaylistItem(sourceUrl, res) {
+    var results = await nurlresolver.resolve(sourceUrl);
     var objImdbs = [];
     results.forEach(x => {
         {
@@ -74,7 +87,7 @@ router.get('/hdhub4u', async function (req, res) {
     response.success = true;
     response.items = objImdbs;
     res.send(response, null, 4);
-});
+}
 
 router.get('/mediasource', async function (req, res) {
     var u = req.query.u;
