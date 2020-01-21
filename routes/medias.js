@@ -10,8 +10,8 @@ const IMDBScraper = require('imdb-scrapper/index')
 router.get("/", async function (req, res) {
   var db = req.app.locals.db;
 
-  var pageNo = parseInt(req.query.next)
-  var limit = parseInt(req.query.limit);
+  var pageNo = parseInt(req.query.next) || 1
+  var limit = parseInt(req.query.limit) || 100;
   if (pageNo < 0 || pageNo === 0) {
     response = { "error": true, "message": "invalid page number, should start with 1" };
     return res.json(response)
