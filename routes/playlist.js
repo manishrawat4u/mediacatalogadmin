@@ -332,6 +332,7 @@ router.get('/:paylistId', async function (req, res) {
             //hacky way
             if (element.source === 'hdhub') {
                 imdbInfo.title = mediaInfo.name;
+                imdbInfo.posterThumb = `/api/images/roku?u=${encodeURIComponent(imdbInfo.poster)}&h=268`;;
                 var mediaSourceUrl = `/api/playlist/mediasource?u=${encodeURIComponent(element.media_document.webViewLink)}`;
                 g.push({
                     imdbInfo,
