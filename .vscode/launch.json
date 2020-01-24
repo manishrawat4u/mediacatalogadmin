@@ -14,7 +14,10 @@
                 "run-script",
                 "debug"
             ],
-            "port": 9229
+            "port": 9229,
+            "env": {
+                "MONGODB_URI":"mongodb://media_catalog_user:test_123@ds127399.mlab.com:27399/appharbor_7hnxl38m",
+            }
         }
         
     ]

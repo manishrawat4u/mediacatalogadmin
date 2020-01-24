@@ -54,10 +54,10 @@ router.get("/", async function (req, res) {
     res.send(dataToReturn || [], null, 4);
 });
 
-router.get('/hdhub4u', async function (req, res) {
-    const sourceUrl = 'https://hdhub4u.live';
-    getUrlResolverPlaylistItem(sourceUrl, res);
-});
+// router.get('/hdhub4u', async function (req, res) {
+//     const sourceUrl = 'https://hdhub4u.live';
+//     getUrlResolverPlaylistItem(sourceUrl, res);
+// });
 
 router.get('/extramovies', async function (req, res) {
     const sourceUrl = 'https://extramovies.pink/';
@@ -309,6 +309,12 @@ router.get('/:paylistId', async function (req, res) {
                 "media_document.videoMediaMetadata.width": { $gt: 1200, $lt: 1800 }
             }
             break;
+        case "hdhub4u":
+            dbFilter = {
+                "imdbInfo": { $ne: null },
+                "source": "hdhub"
+            }
+            break;
         default:
             dbFilter = {
                 "imdbInfo": { $ne: null },
@@ -318,29 +324,38 @@ router.get('/:paylistId', async function (req, res) {
     }
 
 
-    db.collection(MEDIA_COLLECTION).find(dbFilter).toArray(function (err, doc) {
+    db.collection(MEDIA_COLLECTION).find(dbFilter).sort( { "media_document.modifiedTime": -1 } ).toArray(function (err, doc) {
         var g = [];
         doc.forEach(element => {
             var imdbInfo = element.imdbInfo;
             var mediaInfo = element.media_document;
-            var existingElement = g.find(x => x.imdbInfo.id === imdbInfo.id);
-
-            if (!existingElement) {
-                existingElement = {
-                    imdbInfo: imdbInfo,
-                    mediaSources: []
+            //hacky way
+            if (element.source === 'hdhub') {
+                imdbInfo.title = mediaInfo.name;
+                imdbInfo.posterThumb = `/api/images/roku?u=${encodeURIComponent(imdbInfo.poster)}&h=268`;;
+                var mediaSourceUrl = `/api/playlist/mediasource?u=${encodeURIComponent(element.media_document.webViewLink)}`;
+                g.push({
+                    imdbInfo,
+                    mediaSourceUrl
+                });
+            } else {
+                var existingElement = g.find(x => x.imdbInfo.id === imdbInfo.id);
+                if (!existingElement) {
+                    existingElement = {
+                        imdbInfo: imdbInfo,
+                        mediaSources: []
+                    }
+                    g.push(existingElement);
                 }
-                g.push(existingElement);
+                var mediaSource = {
+                    id: mediaInfo.id,
+                    source: element.source,
+                    mimeType: mediaInfo.mimeType,
+                    size: mediaInfo.size,
+                    videoMediaMetadata: mediaInfo.videoMediaMetadata
+                };
+                existingElement.mediaSources.push(mediaSource);
             }
-
-            var mediaSource = {
-                id: mediaInfo.id,
-                source: element.source,
-                mimeType: mediaInfo.mimeType,
-                size: mediaInfo.size,
-                videoMediaMetadata: mediaInfo.videoMediaMetadata
-            };
-            existingElement.mediaSources.push(mediaSource);
         });
 
         // var itemsToReturn = doc.map(element => {
