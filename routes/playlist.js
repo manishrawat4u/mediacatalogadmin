@@ -448,9 +448,9 @@ router.get('/:paylistId', async function (req, res) {
 function massageImdbPoster(mediaItem) {
     //if poster is from amazon
     if (mediaItem.imdbInfo.poster.indexOf('blogspot.com') >= 0) {
-        mediaItem.imdbInfo.posterThumb = mediaItem.imdbInfo.poster.replace('s200', 'S182')
-        mediaItem.imdbInfo.posterHD = mediaItem.imdbInfo.poster.replace('s200', '776');
-        mediaItem.imdbInfo.posterFHD = mediaItem.imdbInfo.poster.replace('s200', '1552');
+        mediaItem.imdbInfo.posterThumb = mediaItem.imdbInfo.poster.replace('s200', 's182')
+        mediaItem.imdbInfo.posterHD = mediaItem.imdbInfo.poster.replace('s200', 's776');
+        mediaItem.imdbInfo.posterFHD = mediaItem.imdbInfo.poster.replace('s200', 's1552');
     }
     else if (mediaItem.imdbInfo.poster.indexOf('amazon.com') >= 0) {
         var basePoster = mediaItem.imdbInfo.poster.substring(0, (mediaItem.imdbInfo.poster.indexOf('.', 30)));

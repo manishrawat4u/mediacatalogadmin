@@ -48,7 +48,7 @@ router.get('/:id', async function (req, res, next) {
     var id = req.params.id;
     // var mediaTitle = req.query.mediaTitle;
     // mediaTitle='thor'
-    var results = await imdbScraper.getFull(id);
+    var results = await IMDBScraper.getFull(id);
     res.send(results, null, 4);
 })
 
