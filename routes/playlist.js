@@ -73,14 +73,16 @@ async function getUrlResolverPlaylistItem(sourceUrl, res) {
             imdbInfo.id = x.link;
             imdbInfo.plot = x.title;
             imdbInfo.poster = x.poster;
-            imdbInfo.posterThumb = `/api/images/roku?u=${encodeURIComponent(x.poster)}&h=268`;
+            //imdbInfo.posterThumb = `/api/images/roku?u=${encodeURIComponent(x.poster)}&h=268`;
             imdbInfo.title = x.title;
             imdbInfo.year = "2019";
             var mediaSourceUrl = `/api/playlist/mediasource?u=${encodeURIComponent(x.link)}`
-            objImdbs.push({
+            var mediaItem = {
                 imdbInfo,
                 mediaSourceUrl
-            })
+            }
+            massageImdbPoster(mediaItem)
+            objImdbs.push(mediaItem)
         }
     });
     var response = {};
@@ -380,16 +382,18 @@ router.get('/:paylistId', async function (req, res) {
         doc.forEach(element => {
             var imdbInfo = element.imdbInfo;
             var mediaInfo = element.media_document;
+
             //hacky way
             if (element.source === 'hdhub') {
                 var existingElement = g.find(x => x.imdbInfo.id === imdbInfo.id);
                 if (!existingElement) {
-                    imdbInfo.posterThumb = `/api/images/roku?u=${encodeURIComponent(imdbInfo.poster)}&h=268`;;
+                    //imdbInfo.posterThumb = `/api/images/roku?u=${encodeURIComponent(imdbInfo.poster)}&h=268`;;
                     var mediaSourceUrl = `/api/playlist/mediasource/byimdb/${encodeURIComponent(imdbInfo.id)}`;
                     existingElement = {
                         imdbInfo,
                         mediaSourceUrl
                     }
+                    massageImdbPoster(existingElement);
                     g.push(existingElement);
                 }
             } else {
@@ -399,6 +403,7 @@ router.get('/:paylistId', async function (req, res) {
                         imdbInfo: imdbInfo,
                         mediaSources: []
                     }
+                    massageImdbPoster(existingElement);
                     g.push(existingElement);
                 }
                 var mediaSource = {
@@ -439,6 +444,27 @@ router.get('/:paylistId', async function (req, res) {
         res.send(response || [], null, 4);
     });
 });
+
+function massageImdbPoster(mediaItem) {
+    //if poster is from amazon
+    if (mediaItem.imdbInfo.poster.indexOf('blogspot.com') >= 0) {
+        mediaItem.imdbInfo.posterThumb = mediaItem.imdbInfo.poster.replace('S200', 'S182')
+        mediaItem.imdbInfo.posterHD = mediaItem.imdbInfo.poster.replace('S200', '776');
+        mediaItem.imdbInfo.posterFHD = mediaItem.imdbInfo.poster.replace('S200', '1552');
+    }
+    else if (mediaItem.imdbInfo.poster.indexOf('amazon.com') >= 0) {
+        var basePoster = mediaItem.imdbInfo.poster.substring(0, (mediaItem.imdbInfo.poster.indexOf('.', 30)));
+        mediaItem.imdbInfo.posterThumb = basePoster + "._V1_UX182_CR0,0,182,268_AL_.jpg";
+        mediaItem.imdbInfo.posterHD = basePoster + "._V1_UX776_CR0,0,776,1024_AL_.jpg";
+        mediaItem.imdbInfo.posterFHD = basePoster + "._V1_UX1552_CR0,0,1552,2048_AL_.jpg";
+    }
+    else {
+        //need to change it to something better
+        mediaItem.imdbInfo.posterThumb = mediaItem.imdbInfo.poster;
+        mediaItem.imdbInfo.posterHD = mediaItem.imdbInfo.poster;
+        mediaItem.imdbInfo.posterFHD = mediaItem.imdbInfo.poster;
+    }
+}
 
 module.exports = router;
 
