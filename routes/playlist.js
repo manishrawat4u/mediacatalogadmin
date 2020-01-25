@@ -89,6 +89,57 @@ async function getUrlResolverPlaylistItem(sourceUrl, res) {
     res.send(response, null, 4);
 }
 
+router.get('/mediasource/byimdb/:imdbid', async function (req, res) {
+    var db = req.app.locals.db;
+    var imdbid = req.params.imdbid;
+    var response = {};
+    try {
+
+        if (imdbid) {
+            var dbFilter = {
+                "imdbInfo.id": imdbid
+            };
+            var dbresponse = await db.collection(MEDIA_COLLECTION).find(dbFilter)
+                .sort({ "media_document.modifiedTime": -1 }).toArray();
+            var promises = [];
+            dbresponse.forEach(element => {
+                var mediaLInk = element.media_document.webViewLink;
+                var promise = nurlresolver.resolveRecursive(mediaLInk);
+                promises.push(promise);
+            });
+            await Promise.all(promises);
+            var mediaSources = [];
+            for (const key in promises) {
+                if (promises.hasOwnProperty(key)) {
+                    const promise = promises[key];
+                    var promiseValue = await promise;
+                    promiseValue.forEach(x => {
+                        var mediaSource = {
+                            id: "",
+                            streamUrl: x.link,
+                            title: x.title || x.link,
+                            mimeType: "mkv",
+                            size: "0",
+                            source: 'api',
+                            live: 0 //can be determined by hls source
+                        };
+                        mediaSources.push(mediaSource)
+                    })
+                }
+            }
+            response.success = true;
+            response.items = mediaSources;
+        } else {
+            response.success = false;
+            response.items = [];
+        }
+    } catch (error) {
+        response.success = false;
+        response.items = [];
+    }
+    res.send(response, null, 4);
+});
+
 router.get('/mediasource', async function (req, res) {
     var u = req.query.u;
     var results = await nurlresolver.resolveRecursive(u);
@@ -324,20 +375,23 @@ router.get('/:paylistId', async function (req, res) {
     }
 
 
-    db.collection(MEDIA_COLLECTION).find(dbFilter).sort( { "media_document.modifiedTime": -1 } ).toArray(function (err, doc) {
+    db.collection(MEDIA_COLLECTION).find(dbFilter).sort({ "media_document.modifiedTime": -1 }).toArray(function (err, doc) {
         var g = [];
         doc.forEach(element => {
             var imdbInfo = element.imdbInfo;
             var mediaInfo = element.media_document;
             //hacky way
             if (element.source === 'hdhub') {
-                imdbInfo.title = mediaInfo.name;
-                imdbInfo.posterThumb = `/api/images/roku?u=${encodeURIComponent(imdbInfo.poster)}&h=268`;;
-                var mediaSourceUrl = `/api/playlist/mediasource?u=${encodeURIComponent(element.media_document.webViewLink)}`;
-                g.push({
-                    imdbInfo,
-                    mediaSourceUrl
-                });
+                var existingElement = g.find(x => x.imdbInfo.id === imdbInfo.id);
+                if (!existingElement) {
+                    imdbInfo.posterThumb = `/api/images/roku?u=${encodeURIComponent(imdbInfo.poster)}&h=268`;;
+                    var mediaSourceUrl = `/api/playlist/mediasource/byimdb/${encodeURIComponent(imdbInfo.id)}`;
+                    existingElement = {
+                        imdbInfo,
+                        mediaSourceUrl
+                    }
+                    g.push(existingElement);
+                }
             } else {
                 var existingElement = g.find(x => x.imdbInfo.id === imdbInfo.id);
                 if (!existingElement) {
