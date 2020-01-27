@@ -29,7 +29,7 @@ router.get("/", async function (req, res) {
 
   var countQuery = await db.collection(MEDIA_COLLECTION).find(dbFilter).count();
 
-  db.collection(MEDIA_COLLECTION).sort(sortQuery).find(dbFilter).skip(skip).limit(limit).toArray(function (err, items) {
+  db.collection(MEDIA_COLLECTION).find(dbFilter).sort(sortQuery).skip(skip).limit(limit).toArray(function (err, items) {
     if (err) {
       handleError(res, err.message, "Failed to get media.");
     } else {
