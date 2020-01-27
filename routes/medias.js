@@ -25,9 +25,11 @@ router.get("/", async function (req, res) {
     dbFilter["$text"] = { $search: q };
   }
 
+  var sortQuery = { _id: -1 };
+
   var countQuery = await db.collection(MEDIA_COLLECTION).find(dbFilter).count();
 
-  db.collection(MEDIA_COLLECTION).find(dbFilter).skip(skip).limit(limit).toArray(function (err, items) {
+  db.collection(MEDIA_COLLECTION).sort(sortQuery).find(dbFilter).skip(skip).limit(limit).toArray(function (err, items) {
     if (err) {
       handleError(res, err.message, "Failed to get media.");
     } else {
@@ -35,11 +37,11 @@ router.get("/", async function (req, res) {
 
       items = items.map(x => {
         var ojjjj = {
-          _id : x._id,
-          source : x.source,
-          ts : x.ts,
+          _id: x._id,
+          source: x.source,
+          ts: x.ts,
           imdbInfo: x.imdbInfo,
-          mediaDocument : {
+          mediaDocument: {
             name: x.media_document.name,
             mimeType: x.media_document.mimeType,
             id: x.media_document.id,
