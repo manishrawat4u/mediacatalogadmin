@@ -59,10 +59,10 @@ router.get("/", async function (req, res) {
 //     getUrlResolverPlaylistItem(sourceUrl, res);
 // });
 
-router.get('/extramovies', async function (req, res) {
-    const sourceUrl = 'https://extramovies.pink/';
-    getUrlResolverPlaylistItem(sourceUrl, res);
-});
+// router.get('/extramovies', async function (req, res) {
+//     const sourceUrl = 'https://extramovies.pink/';
+//     getUrlResolverPlaylistItem(sourceUrl, res);
+// });
 
 async function getUrlResolverPlaylistItem(sourceUrl, res) {
     var results = await nurlresolver.resolve(sourceUrl);
@@ -368,6 +368,12 @@ router.get('/:paylistId', async function (req, res) {
                 "source": "hdhub"
             }
             break;
+        case "extramovies":
+            dbFilter = {
+                "imdbInfo": { $ne: null },
+                "source": "extramovies"
+            }
+            break;
         default:
             dbFilter = {
                 "imdbInfo": { $ne: null },
@@ -384,7 +390,7 @@ router.get('/:paylistId', async function (req, res) {
             var mediaInfo = element.media_document;
 
             //hacky way
-            if (element.source === 'hdhub') {
+            if (element.source === 'hdhub' || element.source === 'extramovies') {
                 var existingElement = g.find(x => x.imdbInfo.id === imdbInfo.id);
                 if (!existingElement) {
                     //imdbInfo.posterThumb = `/api/images/roku?u=${encodeURIComponent(imdbInfo.poster)}&h=268`;;
