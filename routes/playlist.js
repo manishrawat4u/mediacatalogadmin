@@ -32,12 +32,12 @@ router.get("/", async function (req, res) {
         "id": "extramovies",
         "displayName": "ExtraMovies",
         "playlistType": "auto"
+    }, {
+        "id": "livecricket",
+        "displayName": "Live Cricket (Reddit)",
+        "playlistType": "auto"
     }
-        // , {
-        //     "id": "livecricket",
-        //     "displayName": "Live Cricket (Reddit)",
-        //     "playlistType": "auto"
-        // }, {
+        //, {
         //     "id": "hotstarsports",
         //     "displayName": "Hotstar Sports",
         //     "playlistType": "auto"
@@ -155,6 +155,7 @@ router.get('/mediasource', async function (req, res) {
                 mimeType: "mkv",
                 size: "0",
                 source: 'api',
+                referer: x.referer,
                 live: 0 //can be determined by hls source
             };
             mediaSources.push(mediaSource)
@@ -166,91 +167,193 @@ router.get('/mediasource', async function (req, res) {
     res.send(response, null, 4);
 });
 
-router.get('/livecricket', async function (req, res) {
-    var objToReturn = {};
-    var all = req.query.all;
-
-    const otherRequester = new snoowrap({
-        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36',
-        clientId: process.env.redditClientId,
-        clientSecret: process.env.redditClientSecret,
-        username: process.env.redditUserName,
-        password: process.env.redditPassword,
-    });
-
-    var dateTill = new Date();
-    dateTill.setDate(dateTill.getDate() - 1);
-
-    var subReddit = await otherRequester.getSubreddit('InsectsEnthusiasts').getNew();
-    var objImdbs = [];
-    for (let index = 0; index < subReddit.length; index++) {
-        const element = subReddit[index];
-        if (new Date(element.created_utc * 1000) >= dateTill) {
-            var imdbInfo = {};
-            var allextractedurls = [];
-            imdbInfo.id = "tt8710622";
-            imdbInfo.plot = "Live Cricket Stream";
-            imdbInfo.poster = "https://m.media-amazon.com/images/M/MV5BNzExOTdiZGQtNDc1OS00NTNhLWEyNDctMjU1MDRhZGQ1NmE2XkEyXkFqcGdeQXVyODAzNzAwOTU@._V1_QL50.jpg";
-            imdbInfo.title = element.title;
-            imdbInfo.year = "2019";
-
-            var commentId = element.id;
+router.get('/redditsource/bycommentid/:commentid', async function (req, res) {
+    var db = req.app.locals.db;
+    var commentId = req.params.commentid;
+    var response = {};
+    try {
+        if (commentId) {
             var pushshifturl = `https://api.pushshift.io/reddit/search/comment?sort=asc&link_id=${commentId}&limit=10000`;
             const pushshifturlresposne = await axios.get(pushshifturl);
             var data = pushshifturlresposne.data.data;
+            var extractedUrls = [];
             for (let innerIndex = 0; innerIndex < data.length; innerIndex++) {
                 const redditcomments = data[innerIndex];
-                var extractedUrls = [];
                 getUrls(redditcomments.body).forEach(someinput => {
                     extractedUrls.push(someinput);
                 });
-                for (let innerInnerIndex = 0; innerInnerIndex < extractedUrls.length; innerInnerIndex++) {
-                    const extractedUrl = extractedUrls[innerInnerIndex];
-                    var normalizedUrl = voca.trim(extractedUrl, ")")
-                    if (normalizedUrl.includes("bit.ly")) {
-                        normalizedUrl = await urlunshort.expand(normalizedUrl);
-                    } else if (normalizedUrl.includes("cric8")) {
-                        var regex = /game[\d]/g;
-                        var found = normalizedUrl.match(regex);
-
-                        if (found) {
-                            normalizedUrl = `http://cdn1.cric8.cc/live/${found[0].replace("game", "cric")}/index.m3u8`;
-                            allextractedurls.push({ normalizedUrl, extractedUrl });
-
-                            normalizedUrl = `http://cdn2.cric8.cc/live/${found[0].replace("game", "cric")}/index.m3u8`;
-                            allextractedurls.push({ normalizedUrl, extractedUrl });
-
-                            normalizedUrl = `http://cdn3.cric8.cc/live/${found[0].replace("game", "cric")}/index.m3u8`;
-                        }
-                    }
-                    normalizedUrl && allextractedurls.push({ normalizedUrl, extractedUrl });
+                response.success = true;
+                response.items = extractedUrls;
+            }
+            var promises = [];
+            extractedUrls.forEach(element => {
+                var promise = nurlresolver.resolveRecursive(element);
+                promises.push(promise);
+            });
+            await Promise.all(promises);
+            var mediaSources = [];
+            for (const key in promises) {
+                if (promises.hasOwnProperty(key)) {
+                    const promise = promises[key];
+                    var promiseValue = await promise;
+                    promiseValue.forEach(x => {
+                        var mediaSource = {
+                            id: "",
+                            streamUrl: x.link,
+                            title: x.title || x.link,
+                            mimeType: "hls",
+                            size: "0",
+                            source: 'api',
+                            referer: x.referer,
+                            live: 1 //can be determined by hls source
+                        };
+                        mediaSources.push(mediaSource)
+                    })
                 }
             }
-            var finalList = allextractedurls.filter(x => x.normalizedUrl.endsWith('m3u8') || all);
-            var mediaSources = finalList.map(x => {
-                var u = url.parse(x.normalizedUrl);
-                return {
-                    id: "",
-                    streamUrl: x.normalizedUrl,
-                    sourceUrl: x.extractedUrl,
-                    headers: x.normalizedUrl.includes("cric8") ? ["Referer: http://cric8.cc"] : null,
-                    mimeType: "hls",
-                    size: "0",
-                    source: u.hostname
-                }
-            });
-            objImdbs.push({
-                imdbInfo,
-                mediaSources
-            })
+            response.success = true;
+            response.items = mediaSources;
         }
     }
-
-    var response = {};
-    response.success = true;
-    response.items = objImdbs;
+    catch (error){
+        response.success = false;
+        response.items = [];
+    }
     res.send(response, null, 4);
 });
+
+router.get('/livecricket', async function (req, res) {
+    try {
+        const otherRequester = new snoowrap({
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36',
+            clientId: process.env.redditClientId,
+            clientSecret: process.env.redditClientSecret,
+            username: process.env.redditUserName,
+            password: process.env.redditPassword,
+        });
+
+        var dateTill = new Date();
+        dateTill.setDate(dateTill.getDate() - 1);
+
+        var subReddit = await otherRequester.getSubreddit('InsectsEnthusiasts').getNew();
+        var objImdbs = [];
+        for (let index = 0; index < subReddit.length; index++) {
+            const element = subReddit[index];
+            if (new Date(element.created_utc * 1000) >= dateTill) {
+                var imdbInfo = {};
+                var allextractedurls = [];
+                imdbInfo.id = "tt8710622";
+                imdbInfo.plot = "Live Cricket Stream";
+                imdbInfo.poster = "https://m.media-amazon.com/images/M/MV5BNzExOTdiZGQtNDc1OS00NTNhLWEyNDctMjU1MDRhZGQ1NmE2XkEyXkFqcGdeQXVyODAzNzAwOTU@._V1_QL50.jpg";
+                imdbInfo.title = element.title;
+                imdbInfo.year = "2020";
+                var commentId = element.id;
+                var mediaSourceUrl = `/api/playlist/redditsource/bycommentid/${encodeURIComponent(commentId)}`;
+                existingElement = {
+                    imdbInfo,
+                    mediaSourceUrl
+                }
+                massageImdbPoster(existingElement);
+                objImdbs.push(existingElement);
+            }
+        }
+        var response = {};
+        response.success = true;
+        response.items = objImdbs;
+        res.send(response, null, 4);
+    } catch (error) {
+        var response = {};
+        response.success = false;
+        response.items = [];
+        res.send(response, null, 4);
+    }
+});
+
+// router.get('/livecricket', async function (req, res) {
+//     var objToReturn = {};
+//     var all = req.query.all;
+
+//     const otherRequester = new snoowrap({
+//         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36',
+//         clientId: process.env.redditClientId,
+//         clientSecret: process.env.redditClientSecret,
+//         username: process.env.redditUserName,
+//         password: process.env.redditPassword,
+//     });
+
+//     var dateTill = new Date();
+//     dateTill.setDate(dateTill.getDate() - 1);
+
+//     var subReddit = await otherRequester.getSubreddit('InsectsEnthusiasts').getNew();
+//     var objImdbs = [];
+//     for (let index = 0; index < subReddit.length; index++) {
+//         const element = subReddit[index];
+//         if (new Date(element.created_utc * 1000) >= dateTill) {
+//             var imdbInfo = {};
+//             var allextractedurls = [];
+//             imdbInfo.id = "tt8710622";
+//             imdbInfo.plot = "Live Cricket Stream";
+//             imdbInfo.poster = "https://m.media-amazon.com/images/M/MV5BNzExOTdiZGQtNDc1OS00NTNhLWEyNDctMjU1MDRhZGQ1NmE2XkEyXkFqcGdeQXVyODAzNzAwOTU@._V1_QL50.jpg";
+//             imdbInfo.title = element.title;
+//             imdbInfo.year = "2019";
+
+//             var commentId = element.id;
+//             var pushshifturl = `https://api.pushshift.io/reddit/search/comment?sort=asc&link_id=${commentId}&limit=10000`;
+//             const pushshifturlresposne = await axios.get(pushshifturl);
+//             var data = pushshifturlresposne.data.data;
+//             for (let innerIndex = 0; innerIndex < data.length; innerIndex++) {
+//                 const redditcomments = data[innerIndex];
+//                 var extractedUrls = [];
+//                 getUrls(redditcomments.body).forEach(someinput => {
+//                     extractedUrls.push(someinput);
+//                 });
+//                 for (let innerInnerIndex = 0; innerInnerIndex < extractedUrls.length; innerInnerIndex++) {
+//                     const extractedUrl = extractedUrls[innerInnerIndex];
+//                     var normalizedUrl = voca.trim(extractedUrl, ")")
+//                     if (normalizedUrl.includes("bit.ly")) {
+//                         normalizedUrl = await urlunshort.expand(normalizedUrl);
+//                     } else if (normalizedUrl.includes("cric8")) {
+//                         var regex = /game[\d]/g;
+//                         var found = normalizedUrl.match(regex);
+
+//                         if (found) {
+//                             normalizedUrl = `http://cdn1.cric8.cc/live/${found[0].replace("game", "cric")}/index.m3u8`;
+//                             allextractedurls.push({ normalizedUrl, extractedUrl });
+
+//                             normalizedUrl = `http://cdn2.cric8.cc/live/${found[0].replace("game", "cric")}/index.m3u8`;
+//                             allextractedurls.push({ normalizedUrl, extractedUrl });
+
+//                             normalizedUrl = `http://cdn3.cric8.cc/live/${found[0].replace("game", "cric")}/index.m3u8`;
+//                         }
+//                     }
+//                     normalizedUrl && allextractedurls.push({ normalizedUrl, extractedUrl });
+//                 }
+//             }
+//             var finalList = allextractedurls.filter(x => x.normalizedUrl.endsWith('m3u8') || all);
+//             var mediaSources = finalList.map(x => {
+//                 var u = url.parse(x.normalizedUrl);
+//                 return {
+//                     id: "",
+//                     streamUrl: x.normalizedUrl,
+//                     sourceUrl: x.extractedUrl,
+//                     headers: x.normalizedUrl.includes("cric8") ? ["Referer: http://cric8.cc"] : null,
+//                     mimeType: "hls",
+//                     size: "0",
+//                     source: u.hostname
+//                 }
+//             });
+//             objImdbs.push({
+//                 imdbInfo,
+//                 mediaSources
+//             })
+//         }
+//     }
+
+//     var response = {};
+//     response.success = true;
+//     response.items = objImdbs;
+//     res.send(response, null, 4);
+// });
 
 router.get('/hotstarsports', async function (req, res) {
     hotstarUrl = `https://api.hotstar.com/o/v1/page/1984?offset=0&size=20&tao=0&tas=20`
