@@ -25,7 +25,7 @@ router.get('/', async function (req, res, next) {
         //         plot: x.plot
         //     };
         // });
-        var dataToReturn = result && result.d && result.d.filter(x=>x.q === 'feature').map(x=>{
+        var dataToReturn = result && result.d && result.d.filter(x=>x.q).map(x=>{
             return {
                 imdbId: x.id,
                 actors: x.s,
