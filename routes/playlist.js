@@ -54,43 +54,6 @@ router.get("/", async function (req, res) {
     res.send(dataToReturn || [], null, 4);
 });
 
-// router.get('/hdhub4u', async function (req, res) {
-//     const sourceUrl = 'https://hdhub4u.live';
-//     getUrlResolverPlaylistItem(sourceUrl, res);
-// });
-
-// router.get('/extramovies', async function (req, res) {
-//     const sourceUrl = 'https://extramovies.pink/';
-//     getUrlResolverPlaylistItem(sourceUrl, res);
-// });
-
-async function getUrlResolverPlaylistItem(sourceUrl, res) {
-    var results = await nurlresolver.resolve(sourceUrl);
-    var objImdbs = [];
-    results.forEach(x => {
-        {
-            var imdbInfo = {};
-            imdbInfo.id = x.link;
-            imdbInfo.plot = x.title;
-            imdbInfo.poster = x.poster;
-            //imdbInfo.posterThumb = `/api/images/roku?u=${encodeURIComponent(x.poster)}&h=268`;
-            imdbInfo.title = x.title;
-            imdbInfo.year = "2019";
-            var mediaSourceUrl = `/api/playlist/mediasource?u=${encodeURIComponent(x.link)}`
-            var mediaItem = {
-                imdbInfo,
-                mediaSourceUrl
-            }
-            massageImdbPoster(mediaItem)
-            objImdbs.push(mediaItem)
-        }
-    });
-    var response = {};
-    response.success = true;
-    response.items = objImdbs;
-    res.send(response, null, 4);
-}
-
 router.get('/mediasource/byimdb/:imdbid', async function (req, res) {
     var db = req.app.locals.db;
     var imdbid = req.params.imdbid;
@@ -106,7 +69,9 @@ router.get('/mediasource/byimdb/:imdbid', async function (req, res) {
             var promises = [];
             dbresponse.forEach(element => {
                 var mediaLInk = element.media_document.webViewLink;
-                var promise = nurlresolver.resolveRecursive(mediaLInk);
+                var promise = nurlresolver.resolveRecursive(mediaLInk, {
+                    timeout: 20
+                });
                 promises.push(promise);
             });
             await Promise.all(promises);
