@@ -5,7 +5,7 @@ import { MediaService } from 'src/app/medias/media.service';
 import { MediaImdbSetRequest } from 'src/app/models/mediaImdbSetRequest';
 import { ImdbMediaInfo } from 'src/app/models/imdb';
 import { MediaImdbSetResponse } from 'src/app/models/mediaImdbSetResponse';
-import { MatIcon } from '@angular/material';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-imdb-document',

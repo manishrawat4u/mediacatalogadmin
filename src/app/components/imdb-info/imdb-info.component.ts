@@ -1,6 +1,8 @@
 import { Component, OnInit, AfterViewInit, ViewChild, EventEmitter, Output, Input } from '@angular/core';
 import { ImdbService } from '../../services/imdb.service';
-import { MatAutocomplete, MatInput, MatFormField, MatFormFieldControl } from '@angular/material';
+import { MatInput } from "@angular/material/input";
+import { MatFormField, MatFormFieldControl } from "@angular/material/form-field";
+import { MatAutocomplete } from '@angular/material/autocomplete';
 
 import { merge, Observable, of as observableOf } from 'rxjs';
 import { catchError, map, startWith, switchMap, debounceTime, finalize, distinctUntilChanged } from 'rxjs/operators';

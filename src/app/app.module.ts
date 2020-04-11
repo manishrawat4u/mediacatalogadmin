@@ -14,7 +14,7 @@ import { SearchBoxComponent } from './components/search-box/search-box.component
 import { ImdbInfoComponent } from './components/imdb-info/imdb-info.component'
 import { ImdbDocumentComponent } from './components/imdb-document/imdb-document.component';
 import { MediaQualityComponent } from './components/media-quality/media-quality.component';
-import {FileSizeModule} from 'ngx-filesize';
+import { NgxFilesizeModule } from 'ngx-filesize';
 
 @NgModule({
   declarations: [
@@ -33,7 +33,7 @@ import {FileSizeModule} from 'ngx-filesize';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    FileSizeModule
+    NgxFilesizeModule
   ],
   providers: [],
   bootstrap: [AppComponent]

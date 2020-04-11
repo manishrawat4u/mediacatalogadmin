@@ -1,7 +1,12 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Media } from '../media';
 import { MediaService } from '../media.service';
-import { MatSort, MatTableDataSource, MatPaginator, MatSpinner, MatInput } from '@angular/material';
+import { MatPaginator } from "@angular/material/paginator";
+import { MatSpinner } from "@angular/material/progress-spinner";
+import { MatTableDataSource } from "@angular/material/table";
+import { MatInput } from "@angular/material/input";
+import { MatSort } from '@angular/material/sort';
+
 import { DataSource } from '@angular/cdk/table';
 import { PagedList } from 'src/app/paged.list';
 import { merge, Observable, of as observableOf } from 'rxjs';

@@ -1,13 +1,13 @@
-import {A11yModule} from '@angular/cdk/a11y';
-import {DragDropModule} from '@angular/cdk/drag-drop';
-import {PortalModule} from '@angular/cdk/portal';
-import {ScrollingModule} from '@angular/cdk/scrolling';
-import {CdkStepperModule} from '@angular/cdk/stepper';
-import {CdkTableModule} from '@angular/cdk/table';
-import {CdkTreeModule} from '@angular/cdk/tree';
-import {NgModule} from '@angular/core';
-import {
-  MatAutocompleteModule,
+import { A11yModule } from '@angular/cdk/a11y';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { PortalModule } from '@angular/cdk/portal';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { CdkStepperModule } from '@angular/cdk/stepper';
+import { CdkTableModule } from '@angular/cdk/table';
+import { CdkTreeModule } from '@angular/cdk/tree';
+import { NgModule } from '@angular/core';
+/*
+,
   MatBadgeModule,
   MatBottomSheetModule,
   MatButtonModule,
@@ -20,7 +20,7 @@ import {
   MatDividerModule,
   MatExpansionModule,
   MatGridListModule,
-  MatIconModule,
+  
   MatInputModule,
   MatListModule,
   MatMenuModule,
@@ -36,13 +36,24 @@ import {
   MatSlideToggleModule,
   MatSnackBarModule,
   MatSortModule,
-  MatStepperModule,
-  MatTableModule,
-  MatTabsModule,
-  MatToolbarModule,
-  MatTooltipModule,
-  MatTreeModule,
-} from '@angular/material';
+  
+  ,
+  ,
+  ,
+  
+*/
+import { MatTreeModule } from '@angular/material/tree';
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatTabsModule } from "@angular/material/tabs";
+import { MatTableModule } from "@angular/material/table";
+import { MatStepperModule } from "@angular/material/stepper";
+import { MatIconModule } from "@angular/material/icon";
+import { MatPaginatorModule } from "@angular/material/paginator";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatInputModule } from "@angular/material/input";
+import { MatSortModule } from "@angular/material/sort";
 
 @NgModule({
   exports: [
@@ -52,34 +63,34 @@ import {
     CdkTreeModule,
     DragDropModule,
     MatAutocompleteModule,
-    MatBadgeModule,
-    MatBottomSheetModule,
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatCardModule,
-    MatCheckboxModule,
-    MatChipsModule,
+    // MatBadgeModule,
+    // MatBottomSheetModule,
+    // MatButtonModule,
+    // MatButtonToggleModule,
+    // MatCardModule,
+    // MatCheckboxModule,
+    // MatChipsModule,
     MatStepperModule,
-    MatDatepickerModule,
-    MatDialogModule,
-    MatDividerModule,
-    MatExpansionModule,
-    MatGridListModule,
+    // MatDatepickerModule,
+    // MatDialogModule,
+    // MatDividerModule,
+    // MatExpansionModule,
+    // MatGridListModule,
     MatIconModule,
     MatInputModule,
-    MatListModule,
-    MatMenuModule,
-    MatNativeDateModule,
+    // MatListModule,
+    // MatMenuModule,
+    // MatNativeDateModule,
     MatPaginatorModule,
-    MatProgressBarModule,
+    // MatProgressBarModule,
     MatProgressSpinnerModule,
-    MatRadioModule,
-    MatRippleModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatSliderModule,
-    MatSlideToggleModule,
-    MatSnackBarModule,
+    // MatRadioModule,
+    // MatRippleModule,
+    // MatSelectModule,
+    // MatSidenavModule,
+    // MatSliderModule,
+    // MatSlideToggleModule,
+    // MatSnackBarModule,
     MatSortModule,
     MatTableModule,
     MatTabsModule,
@@ -90,7 +101,7 @@ import {
     ScrollingModule,
   ]
 })
-export class DemoMaterialModule {}
+export class DemoMaterialModule { }
 
 
 /**  Copyright 2019 Google Inc. All Rights Reserved.
