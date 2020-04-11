@@ -19,7 +19,7 @@ export class ImdbInfoComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
 
   }
-  @ViewChild(MatAutocomplete) autoCompleted: MatAutocomplete;
+  @ViewChild(MatAutocomplete, { static: true}) autoCompleted: MatAutocomplete;
   @Output() selectedItemChanges = new EventEmitter();
   @Input() title: string;
   @Input() searchBarIconName: string;

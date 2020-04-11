@@ -54,6 +54,8 @@ import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatInputModule } from "@angular/material/input";
 import { MatSortModule } from "@angular/material/sort";
+import { MatCardModule } from "@angular/material/card";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
 
 @NgModule({
   exports: [
@@ -67,7 +69,7 @@ import { MatSortModule } from "@angular/material/sort";
     // MatBottomSheetModule,
     // MatButtonModule,
     // MatButtonToggleModule,
-    // MatCardModule,
+    MatCardModule,
     // MatCheckboxModule,
     // MatChipsModule,
     MatStepperModule,
@@ -82,7 +84,7 @@ import { MatSortModule } from "@angular/material/sort";
     // MatMenuModule,
     // MatNativeDateModule,
     MatPaginatorModule,
-    // MatProgressBarModule,
+    MatProgressBarModule,
     MatProgressSpinnerModule,
     // MatRadioModule,
     // MatRippleModule,
