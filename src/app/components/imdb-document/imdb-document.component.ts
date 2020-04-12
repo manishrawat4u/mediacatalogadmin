@@ -12,7 +12,7 @@ import { MatIcon } from '@angular/material/icon';
   templateUrl: './imdb-document.component.html',
   styleUrls: ['./imdb-document.component.scss']
 })
-export class ImdbDocumentComponent implements OnInit {
+export class ImdbDocumentComponent  {
   @ViewChild(ImdbInfoComponent) imdbInfo: ImdbInfoComponent;
   @Input() mediaDocumentId: string;
   @Input() title: string;
@@ -21,7 +21,7 @@ export class ImdbDocumentComponent implements OnInit {
 
   constructor(private imdbService: MediaService) { }
 
-  ngOnInit() {
+  ngAfterViewInit(): void {
     this.imdbInfo && this.imdbInfo.selectedItemChanges.pipe().subscribe(() => {
       var imdbId = this.imdbInfo.selectedMediaItem.imdbId
       var requestObject = new MediaImdbSetRequest();
@@ -36,5 +36,5 @@ export class ImdbDocumentComponent implements OnInit {
         .catch(() => this.message = "Error");
     });
   }
-
+  
 }

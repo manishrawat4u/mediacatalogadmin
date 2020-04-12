@@ -18,8 +18,13 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class ImdbInfoComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
 
+    this.autoCompleted.optionSelected.pipe().subscribe(data => {
+      this.selectedMediaItem = data.option.value as ImdbMediaInfo;
+      this.selectedItemChanges.emit();
+    });
+
   }
-  @ViewChild(MatAutocomplete, { static: true}) autoCompleted: MatAutocomplete;
+  @ViewChild(MatAutocomplete) autoCompleted!: MatAutocomplete;
   @Output() selectedItemChanges = new EventEmitter();
   @Input() title: string;
   @Input() searchBarIconName: string;
@@ -41,11 +46,6 @@ export class ImdbInfoComponent implements OnInit, AfterViewInit {
     // debugger;
     this.exampleForm = this.formBuilder.group({
       q: ['']
-    });
-
-    this.autoCompleted.optionSelected.pipe().subscribe(data => {
-      this.selectedMediaItem = data.option.value as ImdbMediaInfo;
-      this.selectedItemChanges.emit();
     });
 
     if (this.title) {
