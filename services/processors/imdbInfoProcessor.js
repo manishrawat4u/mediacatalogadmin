@@ -35,16 +35,19 @@ async function getNextItems(db) {
 async function processImdbInfoOnThisItem(db, item) {
     try {
         var mediaTitle = item;
-        const rx = /[^\x00-\x7F]+/;
         var title = mediaTitle.media_document.name;
-        title = title.replace(rx, '');
         parsedInfo = parser.filenameParse(title);
         console.log(`Analyzing media item for auto imdb: ${title}`);
 
         if (parsedInfo) {
-            var imdbInfo = await IMDBScraper.simpleSearch(parsedInfo.title);
+            var imdbInfo = await IMDBScraper.simpleSearch(encodeURI(parsedInfo.title));
             if (imdbInfo && imdbInfo.d) {
-                var potentialMediaItem = imdbInfo.d.find(x => x.l.toUpperCase() === parsedInfo.title.toUpperCase() && x.y == parsedInfo.year);
+                const mediaTypes = ['TV SERIES', 'FEATURE'];
+                var potentialMediaItem = imdbInfo.d.find(x =>
+                    x.l.toUpperCase() === parsedInfo.title.toUpperCase()
+                    && parsedInfo.year
+                    && x.y == parsedInfo.year
+                    && mediaTypes.includes(x.q.toUpperCase()));
                 if (potentialMediaItem) {
                     //we have found it
                     await updateImdbInfo(db, potentialMediaItem.id, item._id)
