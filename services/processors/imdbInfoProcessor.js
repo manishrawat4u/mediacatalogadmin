@@ -41,7 +41,7 @@ async function processImdbInfoOnThisItem(db, item) {
 
         if (parsedInfo) {
             parsedInfo.title = parsedInfo.title.replace(/[^0-9a-z ]/gi, ' ').replace(/\s\s+/g, ' ');    //normalize it.. unicode issue in imdbscrapper
-            var imdbInfo = await IMDBScraper.simpleSearch(encodeURI(parsedInfo.title));
+            var imdbInfo = await IMDBScraper.simpleSearch(parsedInfo.title);
             if (imdbInfo && imdbInfo.d) {
                 const mediaTypes = ['TV SERIES', 'FEATURE'];
                 var potentialMediaItem = imdbInfo.d.find(x =>
