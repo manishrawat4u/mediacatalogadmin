@@ -43,11 +43,11 @@ async function processTmdbInfoOnThisItem(db, item) {
 
         if (apiResposne && apiResposne.status == 200) {
             var tmdbInfo = {};
-            if (apiResposne.data.movie_results) {
+            if (apiResposne.data.movie_results && apiResposne.data.movie_results.length > 0) {
                 tmdbInfo.title = apiResposne.data.movie_results[0].title;
                 tmdbInfo.media = 'Movie';
             }
-            else if (apiResposne.data.movie_results) {
+            else if (apiResposne.data.tv_results && apiResposne.data.tv_results.length > 0) {
                 tmdbInfo.title = apiResposne.data.tv_results[0].name;
                 tmdbInfo.media = 'TV'
             } else {
