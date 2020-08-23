@@ -79,8 +79,15 @@ router.get('/mediasource/byimdb/:imdbid', async function (req, res) {
             for (const key in promises) {
                 if (promises.hasOwnProperty(key)) {
                     const promise = promises[key];
-                    var promiseValue = await promise;
+                    var promiseValue = await promise;                    
                     promiseValue.forEach(x => {
+                        var hostName;
+                        try {
+                            hostName = new URL(x.parent).hostname;    
+                        } catch (error) {
+                            hostName = 'NONE';
+                        }
+                        
                         var mediaSource = {
                             id: "",
                             streamUrl: x.link,
@@ -88,6 +95,8 @@ router.get('/mediasource/byimdb/:imdbid', async function (req, res) {
                             mimeType: "mkv",
                             size: "0",
                             source: 'api',
+                            hostName: hostName,
+                            headers: x.headers,
                             live: 0 //can be determined by hls source
                         };
                         mediaSources.push(mediaSource)
