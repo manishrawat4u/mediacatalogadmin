@@ -10,6 +10,7 @@ const voca = require('voca');
 const urlunshort = require('url-unshort')();
 const url = require('url');
 var nurlresolver = require('nurlresolver');
+var logger = require('../services/logging');
 
 router.get("/", async function (req, res) {
     var dataToReturn = [{
@@ -66,6 +67,10 @@ router.get('/mediasource/byimdb/:imdbid', async function (req, res) {
             };
             var dbresponse = await db.collection(MEDIA_COLLECTION).find(dbFilter)
                 .sort({ "media_document.modifiedTime": -1 }).toArray();
+
+            var imdbTitle = dbresponse[0].imdbInfo.title;
+            logger.logEvent('Application Logs', 'MediaSource', imdbTitle, imdbid);
+
             var promises = [];
             dbresponse.forEach(element => {
                 var mediaLInk = element.media_document.webViewLink;
@@ -79,15 +84,15 @@ router.get('/mediasource/byimdb/:imdbid', async function (req, res) {
             for (const key in promises) {
                 if (promises.hasOwnProperty(key)) {
                     const promise = promises[key];
-                    var promiseValue = await promise;                    
+                    var promiseValue = await promise;
                     promiseValue.forEach(x => {
                         var hostName;
                         try {
-                            hostName = new URL(x.parent).hostname;    
+                            hostName = new URL(x.parent).hostname;
                         } catch (error) {
                             hostName = 'NONE';
                         }
-                        
+
                         var mediaSource = {
                             id: "",
                             streamUrl: x.link,
@@ -189,7 +194,7 @@ router.get('/redditsource/bycommentid/:commentid', async function (req, res) {
             response.items = mediaSources;
         }
     }
-    catch (error){
+    catch (error) {
         response.success = false;
         response.items = [];
     }
