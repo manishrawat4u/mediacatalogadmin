@@ -11,9 +11,9 @@ const urlunshort = require('url-unshort')();
 const url = require('url');
 var nurlresolver = require('nurlresolver');
 var logger = require('../services/logging');
-
+const daddyliveCrawler = require('./../services/crawlers/daddylive');
 const playlistService = require('./../services/playlistService');
-
+const channelLogoService =require('./../services/channelLogoService');
 router.get("/", async function (req, res) {
     var dataToReturn = [{
         "id": "4k",
@@ -38,6 +38,10 @@ router.get("/", async function (req, res) {
     }, {
         "id": "livecricket",
         "displayName": "Live Cricket (Reddit)",
+        "playlistType": "auto"
+    }, {
+        "id": "daddylive",
+        "displayName": "Daddylive",
         "playlistType": "auto"
     }];
     res.send(dataToReturn || [], null, 4);
@@ -76,30 +80,21 @@ router.get('/mediasource/byimdb/:imdbid', async function (req, res) {
 
 router.get('/mediasource', async function (req, res) {
     var u = req.query.u;
-    var results = await nurlresolver.resolveRecursive(u);
-    var mediaSources = [];
-    results.forEach(x => {
-        {
-            var mediaSource = {
-                id: "",
-                streamUrl: x.link,
-                title: x.title || x.link,
-                mimeType: "mkv",
-                size: "0",
-                source: 'api',
-                referer: x.referer,
-                live: 0 //can be determined by hls source
-            };
-            mediaSources.push(mediaSource)
-        }
-    });
     var response = {};
-    response.success = true;
-    response.items = mediaSources;
+    try {
+        logger.logEvent('Application Logs', 'MediaSource', 'IPL', 'IPL');
+        const mediaSources = await playlistService.generateItems([u]);
+        response.success = true;
+        response.items = mediaSources;
+    } catch (error) {
+        response.success = false;
+        response.items = [];
+    }
     res.send(response, null, 4);
 });
 
 router.get('/livecricket', async function (req, res) {
+    const response = {};
     try {
         var imdbInfo = {};
         imdbInfo.id = "tt8710622";
@@ -113,19 +108,44 @@ router.get('/livecricket', async function (req, res) {
             mediaSourceUrl
         }
         massageImdbPoster(existingElement);
-        const objectToSend = {
-            success: true,
-            items: [existingElement]
-        }
-        res.send(objectToSend, null, 4);
+        response.success = true;
+        response.items = [existingElement];
     } catch (error) {
-        var response = {};
         response.success = false;
-        response.error = error.message;
         response.items = [];
-        res.send(response, null, 4);
     }
+    res.send(response, null, 4);
 });
+
+router.get('/daddylive', async function (req, res) {
+    const response = {};
+    try {
+        const results = await daddyliveCrawler.extractLinks();
+        const mappedItems = results.map((x) => {
+            //need a better way to display channels like imdbinfo is not necessary for that, but it will break the app contract.
+            var imdbInfo = {};
+            imdbInfo.id = "";
+            imdbInfo.plot = x.channelName;
+            imdbInfo.poster = channelLogoService.getChannelLogo(x.channelName),
+            imdbInfo.title = x.channelName;
+            imdbInfo.year = "";
+            var mediaSourceUrl = `/api/playlist/mediasource?u=${encodeURIComponent(x.link)}`;
+            var existingElement = {
+                imdbInfo,
+                mediaSourceUrl
+            }
+            massageImdbPoster(existingElement);
+            return existingElement;
+        });
+        response.success = true;
+        response.items = mappedItems;
+    } catch (error) {
+        response.success = false;
+        response.items = [];
+    }
+    res.send(response, null, 4);
+});
+
 
 router.get('/mediasource/cricccipl', async function (req, res) {
     const iplstreams = ['http://www.cric8.cc/ipl2.php', 'http://www.cric8.cc/ipl2.php'];
