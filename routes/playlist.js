@@ -13,7 +13,7 @@ var nurlresolver = require('nurlresolver');
 var logger = require('../services/logging');
 const daddyliveCrawler = require('./../services/crawlers/daddylive');
 const playlistService = require('./../services/playlistService');
-const channelLogoService =require('./../services/channelLogoService');
+const channelLogoService = require('./../services/channelLogoService');
 router.get("/", async function (req, res) {
     var dataToReturn = [{
         "id": "4k",
@@ -80,10 +80,21 @@ router.get('/mediasource/byimdb/:imdbid', async function (req, res) {
 
 router.get('/mediasource', async function (req, res) {
     var u = req.query.u;
+    var p = req.query.p || 0;
     var response = {};
     try {
         logger.logEvent('Application Logs', 'MediaSource', 'IPL', 'IPL');
         const mediaSources = await playlistService.generateItems([u]);
+
+        console.log(p, mediaSources);
+        if (p == 1) {
+            //special case
+            mediaSources.forEach(x => {
+                if (process.env.M3U8_PROXY_URL) {
+                    x.streamUrl = `${process.env.M3U8_PROXY_URL}?u=${encodeURIComponent(x.streamUrl)}`;
+                }
+            })
+        }
         response.success = true;
         response.items = mediaSources;
     } catch (error) {
@@ -127,9 +138,9 @@ router.get('/daddylive', async function (req, res) {
             imdbInfo.id = "";
             imdbInfo.plot = x.channelName;
             imdbInfo.poster = channelLogoService.getChannelLogo(x.channelName),
-            imdbInfo.title = x.channelName;
+                imdbInfo.title = x.channelName;
             imdbInfo.year = "";
-            var mediaSourceUrl = `/api/playlist/mediasource?u=${encodeURIComponent(x.link)}`;
+            var mediaSourceUrl = `/api/playlist/mediasource?u=${encodeURIComponent(x.link)}&p=1`;
             var existingElement = {
                 imdbInfo,
                 mediaSourceUrl

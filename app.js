@@ -78,9 +78,11 @@ var imdb = require('./routes/imdb');
 var playlist = require('./routes/playlist');
 var images = require('./routes/images');
 var crawler = require('./routes/crawler');
+var m3u8 = require('./routes/m3u8');
 
 app.use('/api/medias', medias);
 app.use('/api/imdb', imdb);
 app.use('/api/playlist', playlist);
 app.use('/api/images', images);
 app.use('/api/crawler', crawler);
+app.use('/api/m3u8', m3u8);
