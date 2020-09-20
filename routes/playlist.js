@@ -159,7 +159,7 @@ router.get('/daddylive', async function (req, res) {
 
 
 router.get('/mediasource/cricccipl', async function (req, res) {
-    const iplstreams = ['http://www.cric8.cc/ipl2.php', 'http://www.cric8.cc/ipl2.php'];
+    const iplstreams = ['http://www.cric8.cc/watch/cricket', 'http://www.cric8.cc/watch/cricket2'];
     var response = {};
     try {
         logger.logEvent('Application Logs', 'MediaSource', 'IPL', 'IPL');
