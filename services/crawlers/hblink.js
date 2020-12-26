@@ -1,4 +1,4 @@
-const HBLINKS_API_BASE_URI = 'https://hblinks.pw';
+const HBLINKS_API_BASE_URI = 'https://hblinks.pro';
 const MEDIA_COLLECTION = "media_catalog";
 const axios = require('axios');
 
