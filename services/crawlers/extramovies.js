@@ -1,4 +1,4 @@
-const EXTRAMOVIES_API_BASE_URI = 'https://extramovies.pink';
+const EXTRAMOVIES_API_BASE_URI = 'https://extramovies.world';
 const MEDIA_COLLECTION = "media_catalog";
 const axios = require('axios');
 const IMDBScraper = require('imdb-scrapper/index')
