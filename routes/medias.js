@@ -86,6 +86,23 @@ router.post('/:mediaId/imdb', async function (req, res) {
   });
 });
 
+router.get("/document/:source/:docid", async function (req, res) {
+  var {source, docid} = req.params;  
+  var db = req.app.locals.db;
+  var dbFilter = {
+    source,
+    "media_document.id": parseInt(docid)
+  };
+
+  db.collection(MEDIA_COLLECTION).findOne(dbFilter, function (err, items) {
+    if (err) {
+      handleError(res, err.message, "Failed to get items.");
+    } else {
+      res.status(200).json(items);
+    }
+  });
+});
+
 // app.post("/api/medias", function (req, res) {
 // });
 
