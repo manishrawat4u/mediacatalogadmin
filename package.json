@@ -37,7 +37,7 @@
     "got": "^10.7.0",
     "imdb-scraper": "^1.0.1",
     "imdb-scrapper": "^2.4.0",
-    "mongodb": "^3.5.5",
+    "mongodb": "^3.6.2",
     "ngx-filesize": "^2.0.13",
     "nurlresolver": "1.15.1",
     "rxjs": "~6.5.5",
