@@ -38,7 +38,7 @@
     "imdb-scraper": "^1.0.1",
     "imdb-scrapper": "^2.4.0",
     "mongodb": "^3.5.5",
-    "ngx-filesize": "^2.0.13",
+    "ngx-filesize": "2.0.16",
     "nurlresolver": "1.15.1",
     "rxjs": "~6.5.5",
     "rxjs-observe": "^2.1.5",
