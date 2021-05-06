@@ -42,7 +42,7 @@
     "nurlresolver": "1.15.1",
     "rxjs": "~6.5.5",
     "rxjs-observe": "^2.1.5",
-    "sharp": "^0.25.2",
+    "sharp": "^0.28.1",
     "snoowrap": "^1.21.0",
     "tslib": "^1.11.1",
     "universal-analytics": "^0.4.23",
