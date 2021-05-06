@@ -33,7 +33,7 @@
     "core-js": "^3.6.5",
     "eval": "^0.1.4",
     "express": "^4.17.1",
-    "get-urls": "^9.2.0",
+    "get-urls": "^10.0.0",
     "got": "^10.7.0",
     "imdb-scraper": "^1.0.1",
     "imdb-scrapper": "^2.4.0",
