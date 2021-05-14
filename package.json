@@ -40,7 +40,7 @@
     "mongodb": "^3.5.5",
     "ngx-filesize": "^2.0.13",
     "nurlresolver": "1.15.1",
-    "rxjs": "~6.5.5",
+    "rxjs": "6.6.7",
     "rxjs-observe": "^2.1.5",
     "sharp": "^0.25.2",
     "snoowrap": "^1.21.0",
